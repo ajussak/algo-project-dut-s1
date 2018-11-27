@@ -1,4 +1,4 @@
-unit lieux;
+unit Lieux;
 
 {$mode objfpc}{$H+}
 

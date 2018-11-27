@@ -32,17 +32,17 @@ var
   m : Mois;
 procedure debutPartie(var town : Village);
 Begin
-  village.bois := 0;
-  village.poisson := 10;
-  village.viande := 10;
-  village.pain := 10;
-  village.lait := 10;
-  village.legumes := 10;
-  village.composesScientifique := 10;
-  village.objetsPrecieux := 10;
-  village.annee := 2177;
-  village.m := avril;
-  village.tour := 0;
+  town.bois := 0;
+  town.poisson := 10;
+  town.viande := 10;
+  town.pain := 10;
+  town.lait := 10;
+  town.legumes := 10;
+  town.composesScientifique := 10;
+  town.objetsPrecieux := 10;
+  town.annee := 2177;
+  town.m := avril;
+  town.tour := 0;
 end;
 procedure tourSuivant;
 Begin
