@@ -9,5 +9,5 @@ begin
   cursoroff;
   debutPartie(town);
   WriteLn(town.pain);
-  WriteLn(displayMenu('/home/adrien/bite.txt'));
+  WriteLn(displayMenu('data/village.menu'));
 end.

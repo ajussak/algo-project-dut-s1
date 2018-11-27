@@ -40,7 +40,7 @@ implementation
       while not eof(Stock) do
       begin
            readln(Stock, tmp);
-           WriteLn('    ', i, '.', tmp);.
+           WriteLn('    ', i, '.', tmp);
            i := i + 1;
       end;
 
