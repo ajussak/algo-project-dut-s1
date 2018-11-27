@@ -3,91 +3,74 @@ unit UniteMenus;
 {$mode objfpc}{$H+}
 
 interface
-  uses GestionEcran, crt, keyboard;
+  uses keyboard, crt;
 
-  {Cette procedure va gérer la lecture de fichier, la positionnement du curseur, l'affichage du texte}
-  procedure Menus();
-
-  {Gestion des Inputs du clavier et réponse en fonction de la touche taper}
-  procedure clavier();
-
+  function displayMenu(fileMenu: string): Integer;
 
 implementation
-
-{Cette procedure va gérer la lecture de fichier, la positionnement du curseur, l'affichage du texte}
-
-  {Début procedure Menus}
-  procedure Menus();
-  var
-     Stock : text; // Assiagnation fichier Var.
-     i, j, x, y : Integer; // Var d'increment x2, coordonnées X,Y.
-     nomMenus : array[1..10] of String; // Tableau qui contient les noms des Menus.
-
+  procedure moveCursor(yMove: Integer; deletePrev: Boolean);
   begin
-    assign(Stock, 'StockMenus.txt'); // Assiagnation fichier < - > Var.
-    reset(Stock); // ouverture du fichier en lecture.
+      if deletePrev then
+      begin
+          GotoXY(1, WhereY);
+          Write('   ');
+      end;
+      GotoXY(1, WhereY + yMove); ;
+      Write('==>');
+  end;
 
-    i := 1; // Initialisation de la var d'increment.
+  function displayMenu(fileMenu: string): Integer;
+  var
+    Stock : text;
+    i, choice, key: Integer;
+    tmp: string;
+    cursorOrigin: tcrtcoord;
+  begin
+      assign(Stock, fileMenu); // Assiagnation fichier < - > Var.
+      reset(Stock); // ouverture du fichier en lecture.
 
-    x := 20; // Var de la position en X.
-    y := 20; // Var de la position en Y.
+      i := 1; // Initialisation de la var d'increment.
 
-    while not eof(Stock) do
-    begin
-      readln(Stock, nomMenus[i]); // Lecture des infos à partir du fichier.
-      i := i + 1; // Incrément de la var i.
-    end;
-    close(Stock); // Fermeture du fichier.
+      while not eof(Stock) do
+      begin
+           readln(Stock, tmp);
+           WriteLn('    ', i, '.', tmp); // Lecture des infos à partir du fichier.
+           i := i + 1; // Incrément de la var i.
+      end;
+      close(Stock); // Fermeture du fichier.
 
-    effacerEcran(); // Effacement de la console.
+      choice := 1;
 
-    cursoroff; // Disable cursor.
+      cursorOrigin := WhereY;
 
-    deplacerCurseurXY(x, y); // Positionnement du curseur.
+      moveCursor(-i + 1, false);
+;
+      InitKeyBoard;
+      key := TranslateKeyEvent(GetKeyEvent);
+      while key <> 7181 do
+      begin
+           case key of
+           33619745:
+                  if choice - 1 >= 1 then
+                     begin
+                         choice := choice - 1;
+                         moveCursor(-1, true);
+                     end;
+           33619751:
+                  if choice + 1 < i then
+                     begin
+                         choice := choice + 1;
+                         moveCursor(1, true);
+                     end;
+           end;
+           key := TranslateKeyEvent(GetKeyEvent);
+      end;
+      DoneKeyBoard;
 
-    for j := 1  to length(nomMenus) do
-     begin
-      writeln(nomMenus[j]); // Ecriture sur la console des noms.
-      deplacerCurseurXY(x, y+2); // Positionnement du curseur.
-     end;
+      GotoXY(1, cursorOrigin);
 
-     clavier(); // Appel de la procedure 'clavier'.
-
-   end;
-   {Fin procedure Menus}
-
-{Gestion des Inputs du clavier et réponse en fonction de la touche taper}
-
-  {Début procedure Clavier}
-  procedure clavier();
-   Var
-     K : TKeyEvent; // Déclaration de la var K de type TKeyEvent.
-
-   begin
-     InitKeyBoard; // Initialisation du clavier.
-
-     Repeat
-       K:=GetKeyEvent; // Attente de la pression d'une touche.
-       K:=TranslateKeyEvent(K); // Transtypage TKeyEvent -> Integer.
-
-       if K = 550 then // touche 550 = 'et commercial'.
-
-          begin
-           effacerEcran(); // Effacement de la console.
-           writeln('LOL1'); // Effectuation de ce que voulez.
-          end
-
-       else if K = 898 then // touche 898 = 'é'.
-
-              begin
-                 effacerEcran(); // Effacement de la console.
-                 writeln('LOL2'); // Effectuation de ce que voulez.
-              end;
-
-     Until K = 283 ; // Echap condition de sortie.
-     exit // Sortie du programme
-   end;
-  {Fin procedure Clavier}
+      displayMenu := choice;
+  end;
 
 end.
 

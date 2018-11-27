@@ -1,12 +1,13 @@
 program Main;
 
-uses UniteMenus, VillageUnit;
+uses UniteMenus, VillageUnit, crt;
 
 var
   town: Village;
 
 begin
+  cursoroff;
   debutPartie(town);
   WriteLn(town.pain);
-  readln;
+  WriteLn(displayMenu('/home/adrien/bite.txt'));
 end.
