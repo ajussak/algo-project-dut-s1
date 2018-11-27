@@ -21,15 +21,20 @@ type Village = record
     {Début de la nouvelle partie}
 procedure debutPartie(var town : Village);
     {Passe un tour}
-procedure tourSuivant;
+procedure tourSuivant(var town : Village);
     {Créer un nouveau personnage}
 function newPersonnage(ID : Integer; t : Metier):Personnage;
 function writeMetier( t: Metier):String;
+
+procedure displayStats(var town : Village);
+procedure displayDate(var town : Village);
+
 
 implementation
 var
   bois,poisson,viande,pain,lait,legumes,composesScientifique,objetsPrecieux,annee,tour : Integer;
   m : Mois;
+
 procedure debutPartie(var town : Village);
 Begin
   town.bois := 0;
@@ -44,27 +49,49 @@ Begin
   town.m := avril;
   town.tour := 0;
 end;
-procedure tourSuivant;
-Begin
-  tour := tour +1;
-  if tour = 3 then
+
+procedure displayStats(var town: Village);
+begin
+  WriteLn('====== Ressources ======');
+  WriteLn('Bois : ', town.bois);
+  WriteLn('Poisson : ', town.poisson);
+  WriteLn('Viande : ', town.viande);
+  WriteLn('Pain : ', town.pain);
+  WriteLn('Lait : ', town.lait);
+  WriteLn('Legumes : ', town.legumes);
+  WriteLn('Composes Scientifique : ', town.composesScientifique);
+  WriteLn('Objets Precieux : ', town.objetsPrecieux);
+  WriteLn;
+end;
+
+procedure displayDate(var town : Village);
+begin
+  WriteLn(town.m, ' ', town.annee, ' Tour : ', town.tour);
+end;
+
+procedure tourSuivant(var town : Village);
+begin
+  town.tour := town.tour +1;
+  if town.tour = 3 then
   begin
-    tour := 0;
-    if m = decembre then
+    town.tour := 0;
+    if town.m = decembre then
     begin
-      m := janvier;
-      annee := annee +1;
+      town.m := janvier;
+      town.annee := town.annee +1;
     end
     else
-      m := succ(m);
+      town.m := succ(town.m);
   end;
 end;
+
 function newPersonnage( ID : Integer; t: Metier):Personnage;
 begin
   newPersonnage.travail := t;
   newPersonnage.ID := ID;
   newPersonnage.PV := 100;
 end;
+
 function writeMetier( t: Metier):String;
 begin
   case t of
@@ -76,4 +103,5 @@ begin
     aucun : WriteLn('Aucun');
   end;
 end;
+
 end.
