@@ -1,6 +1,6 @@
 program Main;
 
-uses UniteMenus;
+uses UniteMenus, VillageUnit;
 
 var
   town: Village;
@@ -8,4 +8,5 @@ var
 begin
   debutPartie(town);
   WriteLn(town.pain);
+  readln;
 end.
