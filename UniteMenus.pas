@@ -5,7 +5,7 @@ unit UniteMenus;
 interface
   uses keyboard, crt;
 
-  function displayMenu(fileMenu: string): Integer;
+  function displayMenu(entries: array of string): Integer;
 
 implementation
 
@@ -24,32 +24,20 @@ implementation
       Write('==>');
   end;
 
-  function displayMenu(fileMenu: string): Integer;
+  function displayMenu(entries: array of string): Integer;
   var
-    Stock : text;
-    i, choice, key: Integer;
-    tmp: string; // Variable temporaire
+    choice, key: Integer;
+    line: string;
     cursorOrigin: tcrtcoord; //Sauvegarde de la position du curseur de la console
   begin
-      assign(Stock, fileMenu); // Assiagnation fichier < - > Var.
-      reset(Stock); // ouverture du fichier en lecture.
-
-      i := 1; // Initialisation de la var d'increment.
-
-      //Affichage de chaque ligne du fichier précédée par le numéro choix correspondant.
-      while not eof(Stock) do
-      begin
-           readln(Stock, tmp);
-           WriteLn('   ', tmp);
-           i := i + 1;
-      end;
-
-      close(Stock); // Fermeture du fichier.
+      //Affichage de chaque choix
+      for line in entries do
+           WriteLn('   ', line);
 
       choice := 1;
 
       cursorOrigin := WhereY;//Sauvegarde la position du curseur de la console
-      moveCursor(-i + 1, false); //Affichage du curseur du menu
+      moveCursor(-Length(entries), false); //Affichage du curseur du menu
 ;
       InitKeyBoard; //Initialisation de la capture du clavier
       key := TranslateKeyEvent(GetKeyEvent); //Attente et capture de l'appuis d'une touches
@@ -63,7 +51,7 @@ implementation
                          moveCursor(-1, true); //Déplacer le curseur de la console d'un cran vers le bas
                      end;
            33619751: //Si la touche DOWN est pressée
-                  if choice + 1 < i then
+                  if choice < Length(entries) then
                      begin
                          choice := choice + 1;
                          moveCursor(1, true); //Déplacer le curseur de la console d'un cran vers le haut
