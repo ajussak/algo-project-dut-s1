@@ -1,14 +1,13 @@
 program Main;
 
-uses UniteMenus, VillageUnit, crt, screenhelper;
+uses UniteMenus, VillageUnit, crt, screenhelper, Utils;
 
+procedure play();
 var
   town: Village;
   menuChoice, exit: Integer;
-  cursorOrigin: tcrtcoord;
   menu:  array[0 .. 2] of string;
 begin
-  cursoroff;
   debutPartie(town);
   exit := 0;
   Repeat
@@ -17,7 +16,6 @@ begin
 
         displayDate(town);
         displayStats(town);
-        cursorOrigin := WhereY;
 
         menu[0] := 'Gérer les ouvriers';
         menu[1] := 'Dormir';
@@ -25,8 +23,25 @@ begin
 
         menuChoice := displayMenu(menu);
         case menuChoice of
-        2: tourSuivant(town);
-        3: exit := 1;
+        1: tourSuivant(town);
+        2: exit := 1;
         end
   Until exit = 1;
+end;
+
+
+var
+  menu:  array[0 .. 1] of string;
+begin
+  cursoroff;
+
+  displayFile('data/title.txt', 0);
+
+  menu[0] := 'Nouvelle partie';
+  menu[1] := 'Quitter le jeu';
+  case displayMenu(menu) of
+  0: play();
+  end;
+
+  cursoron;
 end.

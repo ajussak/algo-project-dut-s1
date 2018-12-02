@@ -34,7 +34,7 @@ implementation
       for line in entries do
            WriteLn('   ', line);
 
-      choice := 1;
+      choice := 0;
 
       cursorOrigin := WhereY;//Sauvegarde la position du curseur de la console
       moveCursor(-Length(entries), false); //Affichage du curseur du menu
@@ -45,13 +45,13 @@ implementation
       begin
            case key of
            33619745: //Si la touche UP est pressée
-                  if choice - 1 >= 1 then
+                  if choice - 1 >= 0 then
                      begin
                          choice := choice - 1;
                          moveCursor(-1, true); //Déplacer le curseur de la console d'un cran vers le bas
                      end;
            33619751: //Si la touche DOWN est pressée
-                  if choice < Length(entries) then
+                  if choice + 1 < Length(entries) then
                      begin
                          choice := choice + 1;
                          moveCursor(1, true); //Déplacer le curseur de la console d'un cran vers le haut
