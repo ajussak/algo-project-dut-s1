@@ -1,4 +1,4 @@
-program Main;
+Ouiprogram Main;
 
 uses UniteMenus, VillageUnit, crt, screenhelper, Utils;
 
@@ -34,8 +34,9 @@ var
   menu:  array[0 .. 1] of string;
 begin
   cursoroff;
+  clearScreen();
 
-  displayFile('data/title.txt', 0);
+  displayFile('data/title.txt', 1);
 
   menu[0] := 'Nouvelle partie';
   menu[1] := 'Quitter le jeu';

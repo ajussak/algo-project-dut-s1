@@ -3,3 +3,5 @@ lib/
 backup/
 *.lps
 *.lpi
+.idea/
+Main
