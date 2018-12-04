@@ -13,7 +13,6 @@ type personnage = record
     travail : Metier;
     ID : Integer;
     Nom : String;
-    Prenom : String;
     XP : Integer;
     Niveau : Integer;
   end;
@@ -94,14 +93,13 @@ begin
   end;
 end;
 
-function newPersonnage(ID: Integer; t: Metier; nom,prenom: String):Personnage;
+function newPersonnage(ID: Integer; t: Metier; nom: String):Personnage;
 {créer un type personnage (record) avec une variable ID, une variable PV et une variable travail}
 begin
   newPersonnage.travail := t;
   newPersonnage.ID := ID;
   newPersonnage.PV := 100;
   newPersonnage.Nom := nom;
-  newPersonnage.Prenom := prenom;
   newPersonnage.XP := 0;
   newPersonnage.Niveau := 0;
 end;
