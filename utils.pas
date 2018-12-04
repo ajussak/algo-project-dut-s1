@@ -7,6 +7,7 @@ interface
 uses crt;
 
 procedure displayFile(filename: string; xPos: tcrtcoord);
+procedure clearScreen();
 
 implementation
 
@@ -23,6 +24,13 @@ begin
     readln(stock, ligne);
     writeln(ligne);
   end;
+  close(Stock);
+end;
+
+procedure clearScreen();
+begin
+  ClrScr;
+  GotoXY(1,1);
 end;
 
 end.
