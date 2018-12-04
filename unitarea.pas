@@ -20,29 +20,36 @@ implementation
 procedure goToArea(var areas: AreaRegistry);
 var
   menu: array of string;
-  i, choice: Integer;
+  i, choice, l: Integer;
 begin
-  clearScreen;
-  SetLength(menu, Length(areas));
+  l := Length(areas);
+
+  WriteLn();
+  WriteLn('Selectionner la zone à visiter : ');
+  SetLength(menu, l + 1);
   for i:= 0 to Length(areas) do
       menu[i] := areas[i].name;
+  menu[l] := 'Retour';
   choice := displayMenu(menu);
-  clearScreen;
-  displayFile('data/' + areas[choice].name + '.txt',1);
-  readln;
+  WriteLn(choice);
+  WriteLn(l);
+  if choice <> l then
+  begin
+    clearScreen;
+    displayFile('data/' + areas[choice].name + '.txt',1);
+    readln;
+  end;
 end;
 
 procedure registerAreas(var areas: AreaRegistry);
 begin
-  setLength(areas, 4);
+  setLength(areas, 3);
 
-  areas[0].name := 'Campement';
+  areas[0].name := 'Forêt';
 
-  areas[1].name := 'Forêt';
+  areas[1].name := 'IUT';
 
-  areas[2].name := 'IUT';
-
-  areas[3].name := 'Lac'
+  areas[2].name := 'Lac'
 end;
 
 end.
