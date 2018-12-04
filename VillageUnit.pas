@@ -24,9 +24,11 @@ procedure debutPartie(var town : Village);
 procedure tourSuivant(var town : Village);
     {Créer un nouveau personnage}
 function newPersonnage(ID : Integer; t : Metier):Personnage;
+    {Affiche le role (métier) à l''écran}
 function writeMetier( t: Metier):String;
-
+    {Affiche les ressources disponibles à l''écran}
 procedure displayStats(var town : Village);
+    {Affiche la date à l''écran}
 procedure displayDate(var town : Village);
 
 
@@ -36,6 +38,7 @@ var
   m : Mois;
 
 procedure debutPartie(var town : Village);
+{Initialise les variables de ressources}
 Begin
   town.bois := 0;
   town.poisson := 10;
@@ -70,6 +73,8 @@ begin
 end;
 
 procedure tourSuivant(var town : Village);
+{incrémente de un la variable tour, incrémente de un la variable mois si tour =3 
+et incrémente de un la variable année si mois = décembre}
 begin
   town.tour := town.tour +1;
   if town.tour = 3 then
@@ -86,6 +91,7 @@ begin
 end;
 
 function newPersonnage( ID : Integer; t: Metier):Personnage;
+{créer un type personnage (record) avec une variable ID, une variable PV et une variable travail}
 begin
   newPersonnage.travail := t;
   newPersonnage.ID := ID;
