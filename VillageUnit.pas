@@ -14,7 +14,7 @@ type personnage = record
     ID : Integer;
   end;
 type Village = record
-    bois,poisson,viande,pain,lait,legumes,composesScientifique,objetsPrecieux,tour,annee : Integer;
+    bois,poisson,viande,pain,lait,legumes,objetsPrecieux,tour,annee : Integer;
     m : Mois;
 
   end;
@@ -34,7 +34,7 @@ procedure displayDate(var town : Village);
 
 implementation
 var
-  bois,poisson,viande,pain,lait,legumes,composesScientifique,objetsPrecieux,annee,tour : Integer;
+  bois,poisson,viande,pain,lait,legumes,objetsPrecieux,annee,tour : Integer;
   m : Mois;
 
 procedure debutPartie(var town : Village);
@@ -46,7 +46,6 @@ Begin
   town.pain := 10;
   town.lait := 10;
   town.legumes := 10;
-  town.composesScientifique := 10;
   town.objetsPrecieux := 10;
   town.annee := 2177;
   town.m := avril;
@@ -62,7 +61,6 @@ begin
   WriteLn('Pain : ', town.pain);
   WriteLn('Lait : ', town.lait);
   WriteLn('Legumes : ', town.legumes);
-  WriteLn('Composes Scientifique : ', town.composesScientifique);
   WriteLn('Objets Precieux : ', town.objetsPrecieux);
   WriteLn;
 end;
