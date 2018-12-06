@@ -4,10 +4,11 @@ unit UnitArea;
 
 interface
 
-uses UniteMenus, Utils;
+uses UniteMenus, Utils, UnitResources;
 
 type area = record
   name:string;
+  resources: resourceList;
 end;
 
 type AreaRegistry = array of area;
@@ -36,8 +37,7 @@ begin
   if choice <> l then
   begin
     clearScreen;
-    displayFile('data/' + areas[choice].name + '.txt',1);
-    readln;
+    displayFile('data/' + areas[choice].name + '.txt',1, true);
   end;
 end;
 
@@ -46,10 +46,16 @@ begin
   setLength(areas, 3);
 
   areas[0].name := 'Forêt';
+  areas[0].resources := createResourcesList();
+  areas[0].resources.bois := 5;
 
   areas[1].name := 'IUT';
+  areas[1].resources := createResourcesList();
+  areas[1].resources.objetsPrecieux := 5;
 
-  areas[2].name := 'Lac'
+  areas[2].name := 'Lac';
+  areas[2].resources := createResourcesList();
+  areas[2].resources.poisson := 5;
 end;
 
 end.

@@ -4,70 +4,62 @@ unit VillageUnit;
 
 interface
 
-uses
-  Classes, SysUtils;
+uses UnitResources, Utils, sysutils, UniteMenus, UnitArea;
 type Mois = (janvier,fevrier,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,decembre);
-type Metier = (bucheron,constucteur,pecheur,explorateur,fermier,aucun);
 type personnage = record
-    PV : Integer;
-    travail : Metier;
-    ID : Integer;
+    PV, affectedArea : Integer;
   end;
 type Village = record
-    bois,poisson,viande,pain,lait,legumes,objetsPrecieux,tour,annee : Integer;
+    resources: resourceList;
+    tour, annee: Integer;
     m : Mois;
-
+    villagers: array of personnage;
+    villagersNumber: Integer;
   end;
+
     {Début de la nouvelle partie}
 procedure debutPartie(var town : Village);
     {Passe un tour}
 procedure tourSuivant(var town : Village);
     {Créer un nouveau personnage}
-function newPersonnage(ID : Integer; t : Metier):Personnage;
-    {Affiche le role (métier) à l''écran}
-function writeMetier( t: Metier):String;
-    {Affiche les ressources disponibles à l''écran}
-procedure displayStats(var town : Village);
+function newPersonnage():Personnage;
     {Affiche la date à l''écran}
 procedure displayDate(var town : Village);
 
+procedure manageVillagers(var town: Village; var areas: AreaRegistry);
+
 
 implementation
-var
-  bois,poisson,viande,pain,lait,legumes,objetsPrecieux,annee,tour : Integer;
-  m : Mois;
 
 procedure debutPartie(var town : Village);
+var
+  i: Integer;
 {Initialise les variables de ressources}
 Begin
-  town.bois := 0;
-  town.poisson := 10;
-  town.viande := 10;
-  town.pain := 10;
-  town.lait := 10;
-  town.legumes := 10;
-  town.objetsPrecieux := 10;
+  town.resources.bois := 0;
+  town.resources.poisson := 10;
+  town.resources.viande := 10;
+  town.resources.pain := 10;
+  town.resources.lait := 10;
+  town.resources.legumes := 10;
+  town.resources.objetsPrecieux := 10;
   town.annee := 2177;
   town.m := avril;
   town.tour := 0;
-end;
+  town.villagersNumber := 3;
 
-procedure displayStats(var town: Village);
-begin
-  WriteLn('====== Ressources ======');
-  WriteLn('Bois : ', town.bois);
-  WriteLn('Poisson : ', town.poisson);
-  WriteLn('Viande : ', town.viande);
-  WriteLn('Pain : ', town.pain);
-  WriteLn('Lait : ', town.lait);
-  WriteLn('Legumes : ', town.legumes);
-  WriteLn('Objets Precieux : ', town.objetsPrecieux);
-  WriteLn;
+  SetLength(town.villagers, 20);
+
+  for i := 0 to town.villagersNumber - 1 do
+  begin
+    town.villagers[i] := newPersonnage();
+  end;
+
 end;
 
 procedure displayDate(var town : Village);
 begin
-  WriteLn(town.m, ' ', town.annee, ' Tour : ', town.tour);
+  WriteLn(town.m, ' ', town.annee);
 end;
 
 procedure tourSuivant(var town : Village);
@@ -88,24 +80,56 @@ begin
   end;
 end;
 
-function newPersonnage( ID : Integer; t: Metier):Personnage;
-{créer un type personnage (record) avec une variable ID, une variable PV et une variable travail}
+procedure manageVillager(var villager: Personnage);
+var
+  menu: array[0 .. 1] of string;
 begin
-  newPersonnage.travail := t;
-  newPersonnage.ID := ID;
-  newPersonnage.PV := 100;
+  menu[0} = 'Affecter à une zone';
+  menu(1] = 'Retour';
+
+  WriteLn;
+
+  ReadLn;
 end;
 
-function writeMetier( t: Metier):String;
+procedure manageVillagers(var town: Village; var areas: AreaRegistry);
+var
+  i, choice, exit: Integer;
+  menu: array of string;
+  affectation: string;
+  var villager: Personnage;
 begin
-  case t of
-    bucheron : WriteLn(UnicodeCharToString('Bûcheron'));
-    constucteur : WriteLn('Constructeur');
-    pecheur : WriteLn(UnicodeCharToString('Pêcheur'));
-    explorateur : WriteLn('Explorateur');
-    fermier : WriteLn('Fermier');
-    aucun : WriteLn('Aucun');
-  end;
+  exit := 0;
+  repeat
+    clearScreen;
+    SetLength(menu, town.villagersNumber + 1);
+    for i := 0 to town.villagersNumber - 1 do
+    begin
+      villager := town.villagers[i];
+      if villager.affectedArea = -1 then
+         affectation := 'Aucune'
+      else
+        affectation := areas.[villager.affectedArea].name;
+
+      menu[i] := 'Villageois ' + IntToStr(i + 1) + ' : Points de vie (' + IntToStr(villager.PV) + ') Zone Affectée (' + affectation + ')';
+    end;
+    menu[town.villagersNumber] := 'Retour';
+    choice := displayMenu(menu);
+
+    if choice <> town.villagersNumber then
+      manageVillager(town.villagers[choice])
+    else
+        exit := 1;
+
+  until exit = 1;
+
+end;
+
+function newPersonnage():Personnage;
+{créer un type personnage (record) avec une variable ID, une variable PV et une variable travail}
+begin;
+  newPersonnage.PV := 100;
+  newPersonnage.affectedArea := -1;
 end;
 
 end.

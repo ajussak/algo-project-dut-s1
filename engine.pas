@@ -4,7 +4,7 @@ unit Engine;
 
 interface
 
-uses UniteMenus, VillageUnit, crt, screenhelper, UnitArea;
+uses UniteMenus, VillageUnit, crt, UnitArea, Utils, UnitResources;
 
 type Game = record
   town: Village;
@@ -28,8 +28,11 @@ begin
         //Vider la console
         clearScreen();
 
+        displayFile('data/Campement.txt', 1, false);
+        WriteLn;
+
         displayDate(jeu.town);
-        displayStats(jeu.town);
+        displayStats(jeu.town.resources);
 
         menu[0] := 'Gérer les ouvriers';
         menu[1] := 'Se rendre à ...';

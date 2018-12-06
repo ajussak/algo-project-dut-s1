@@ -4,17 +4,18 @@ unit Utils;
 
 interface
 
-uses crt;
+uses crt, UniteMenus;
 
-procedure displayFile(filename: string; xPos: tcrtcoord);
+procedure displayFile(filename: string; xPos: tcrtcoord; waitUser: Boolean);
 procedure clearScreen();
 
 implementation
 
-procedure displayFile(filename: string; xPos: tcrtcoord);
+procedure displayFile(filename: string; xPos: tcrtcoord; waitUser: Boolean);
 var
   stock: text;
   ligne: string;
+  menu: array of string;
 begin
   assign(stock, filename);
   reset(stock);
@@ -25,6 +26,14 @@ begin
     writeln(ligne);
   end;
   close(Stock);
+
+  if waitUser then
+  begin
+    SetLength(menu, 1);
+    menu[0] := 'Retour';
+    WriteLn;
+    displayMenu(menu);
+  end;
 end;
 
 procedure clearScreen();
