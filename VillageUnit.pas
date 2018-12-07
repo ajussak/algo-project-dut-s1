@@ -80,16 +80,33 @@ begin
   end;
 end;
 
-procedure manageVillager(var villager: Personnage);
+procedure affectArea(var villager: Personnage; var areas: AreaRegistry);
+var
+   menu: array of string;
+   i, choice: Integer;
+begin
+  setLength(menu, Length(areas)+1);
+  for i := 0 to Length(areas) do
+      menu[i] := areas[i].name;
+  menu[Length(areas)] := 'Retour';
+
+  choice := displayMenu(menu);
+
+  if choice <> Length(areas) then
+     villager.affectedArea := choice;
+
+end;
+
+procedure manageVillager(var villager: Personnage; var areas: AreaRegistry);
 var
   menu: array[0 .. 1] of string;
 begin
-  menu[0} = 'Affecter à une zone';
-  menu(1] = 'Retour';
+  menu[0] := 'Affecter à une zone...';
+  menu[1] := 'Retour';
 
-  WriteLn;
-
-  ReadLn;
+  case displayMenu(menu) of
+  0: affectArea(villager, areas);
+  end;
 end;
 
 procedure manageVillagers(var town: Village; var areas: AreaRegistry);
@@ -117,7 +134,7 @@ begin
     choice := displayMenu(menu);
 
     if choice <> town.villagersNumber then
-      manageVillager(town.villagers[choice])
+      manageVillager(town.villagers[choice], areas)
     else
         exit := 1;
 
