@@ -74,6 +74,16 @@ begin
   end;
 end;
 
+procedure villagerConsume(var town: Village);
+var
+  i: Integer;
+begin
+  town.resources.pain := town.resources.pain - town.villagersNumber;
+  town.resources.legumes := town.resources.legumes - town.villagersNumber;
+  town.resources.viande := town.resources.viande - town.villagersNumber;
+  town.resources.poisson := town.resources.poisson - town.villagersNumber;
+end;
+
 procedure tourSuivant(var town : Village; var areas: AreaRegistry);
 {incrémente de un la variable tour, incrémente de un la variable mois si tour =3 
 et incrémente de un la variable année si mois = décembre}
@@ -90,6 +100,7 @@ begin
     else
       town.m := succ(town.m);
   end;
+  villagerConsume(town);
   resourcesTurn(town, areas);
 end;
 
