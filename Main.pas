@@ -31,7 +31,7 @@ begin
         case menuChoice of
         0: manageVillagers(town, areas);
         1: goToArea(areas);
-        2: tourSuivant(town);
+        2: tourSuivant(town, areas);
         3: exit := 1;
         end
   Until exit = 1;

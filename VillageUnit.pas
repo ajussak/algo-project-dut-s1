@@ -20,7 +20,7 @@ type Village = record
     {Début de la nouvelle partie}
 procedure debutPartie(var town : Village);
     {Passe un tour}
-procedure tourSuivant(var town : Village);
+procedure tourSuivant(var town : Village; var areas: AreaRegistry);
     {Créer un nouveau personnage}
 function newPersonnage():Personnage;
     {Affiche la date à l''écran}
@@ -62,7 +62,19 @@ begin
   WriteLn(town.m, ' ', town.annee);
 end;
 
-procedure tourSuivant(var town : Village);
+procedure resourcesTurn(var town: Village; var areas: AreaRegistry);
+var
+  i, areaID: Integer;
+begin
+  for i:=0 to town.villagersNumber - 1 do
+  begin
+    areaID := town.villagers[i].affectedArea;
+    if areaID <> -1 then
+      importResources(town.resources, areas[areaID].resources);
+  end;
+end;
+
+procedure tourSuivant(var town : Village; var areas: AreaRegistry);
 {incrémente de un la variable tour, incrémente de un la variable mois si tour =3 
 et incrémente de un la variable année si mois = décembre}
 begin
@@ -78,6 +90,7 @@ begin
     else
       town.m := succ(town.m);
   end;
+  resourcesTurn(town, areas);
 end;
 
 procedure affectArea(var villager: Personnage; var areas: AreaRegistry);

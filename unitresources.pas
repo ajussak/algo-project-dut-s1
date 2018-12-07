@@ -10,6 +10,7 @@ end;
 
 procedure displayStats(var resources: resourceList);
 function createResourcesList(): resourceList;
+procedure importResources(var village: resourceList; var area: resourceList);
 
 implementation
 
@@ -38,6 +39,17 @@ begin
   resources.legumes := 0;
   resources.objetsPrecieux := 0;
   createResourcesList := resources;
+end;
+
+procedure importResources(var village: resourceList; var area: resourceList);
+begin
+  village.bois := village.bois + area.bois;
+  village.poisson := village.poisson + area.poisson;
+  village.viande := village.viande + area.viande;
+  village.pain := village.pain + area.pain;
+  village.lait := village.lait + area.lait;
+  village.legumes := village.legumes + area.legumes;
+  village.objetsPrecieux := village.objetsPrecieux + area.objetsPrecieux;
 end;
 
 end.
