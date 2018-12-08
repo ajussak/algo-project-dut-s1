@@ -71,7 +71,6 @@ implementation
   procedure commerce(var town: Village);
   var
     menusChoixRessources, menusChoixRessourcesQtBois, menusChoixRessourcesQtMetal: Tableau_String;
-    QtNourritureS : String;
     resChoix, QtNourritureI: Integer;
 
     label MenusPrincipal;
@@ -101,7 +100,7 @@ implementation
     MenusPrincipal:
 
     // Cond pour savoir si on a assez d'argent.
-    if town.resources.objetsPrecieux < 1 then
+    if town.resources.objetsPrecieux <= 3 then
       begin
        writeln('Tu n''as pas assez d''objet precieux reviens plus tard');
        readln();
@@ -120,6 +119,7 @@ implementation
     case resChoix of
          // Gestion de la vente des Ressources.
          0:begin
+              writeln('Quel quantite veux-tu ? ');
               if menusChoixRessources[0] = ' 1: Bois' then
                  begin
                    menusChoixRessourcesQtBois[3] := ' 4: Retour';
@@ -172,7 +172,6 @@ implementation
          1:begin
                 Randomize;
                 QtNourritureI := Random(5)+5;
-                QtNourritureS := IntToStr(QtNourritureI);
                 if menusChoixRessources[1] = ' 2: Pain' then
                   begin
                    town.resources.objetsPrecieux := town.resources.objetsPrecieux - 1;
@@ -186,7 +185,11 @@ implementation
                    goto menusPrincipal;
                   end;
            end;
-         2:exit;
+         2:begin
+                write('Au revoir etranger, c''etait un reel plaisir de faire affaire avec toi');
+                readln();
+                exit;
+           end;
     end;
   end;
 end.
