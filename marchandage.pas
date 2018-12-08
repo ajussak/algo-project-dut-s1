@@ -70,8 +70,8 @@ implementation
   }
   procedure commerce(var town: Village);
   var
-    menusChoixRessources, menusChoixQtRessources, menusChoixRessourcesQtBois, menusChoixRessourcesQtMetal: Tableau_String;
-    choixRetour, QtNourritureS : String;
+    menusChoixRessources, menusChoixRessourcesQtBois, menusChoixRessourcesQtMetal: Tableau_String;
+    QtNourritureS : String;
     resChoix, QtNourritureI: Integer;
 
     label MenusPrincipal;
