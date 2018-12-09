@@ -7,7 +7,7 @@ interface
 uses UnitResources, Utils, sysutils, UniteMenus, UnitArea, combat;
 type Mois = (janvier,fevrier,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,decembre);
 type personnage = record
-    PV, affectedArea : Integer;
+    affectedArea : Integer;
     hasEaten: Boolean;
   end;
 type Village = record
@@ -192,7 +192,7 @@ begin
       else
         hasEaten := ' N''a pas mangé';
 
-      menu[i] := 'Villageois ' + IntToStr(i + 1) + ' : Points de vie (' + IntToStr(villager.PV) + ') Zone Affectée (' + affectation + ')' + hasEaten;
+      menu[i] := 'Villageois ' + IntToStr(i + 1) + ' Zone Affectée (' + affectation + ')' + hasEaten;
     end;
     menu[town.villagersNumber] := 'Retour';
     choice := displayMenu(menu);
@@ -209,7 +209,6 @@ end;
 function newPersonnage():Personnage;
 {créer un type personnage (record) avec une variable ID, une variable PV et une variable travail}
 begin;
-  newPersonnage.PV := 100;
   newPersonnage.affectedArea := -1;
   newPersonnage.hasEaten := true;
 end;

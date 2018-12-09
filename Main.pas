@@ -5,29 +5,30 @@ uses UniteMenus, VillageUnit, crt, Utils, UnitArea, UnitResources;
 procedure play();
 var
   menuChoice, exit: Integer;
-  menu:  array[0 .. 3] of string;
+  menu:  array[0 .. 3] of string; //Entrées du menu
   town: Village;
   areas: AreaRegistry;
 begin
-  registerAreas(areas);
-  debutPartie(town);
+  registerAreas(areas); //Définitions des zones
+  debutPartie(town); //Initialisation du village
   exit := 0;
   Repeat
         //Vider la console
         clearScreen();
 
-        displayFile('data/Campement.txt', 1, false);
+        displayFile('data/Campement.txt', 1, false); //Afficher le texte descriptif du campement
         WriteLn;
 
-        displayDate(town);
-        displayStats(town.resources);
+        displayDate(town); //Affichage de la date dans le jeu
+        displayStats(town.resources); //Affichage des resources du village
 
+        //Définition du menu
         menu[0] := 'Gérer les villageois';
         menu[1] := 'Se rendre à ...';
         menu[2] := 'Dormir';
         menu[3] := 'Quitter le jeu';
 
-        menuChoice := displayMenu(menu);
+        menuChoice := displayMenu(menu); //Affichage du menu et récupération du choix de l'utilisateur
         case menuChoice of
         0: manageVillagers(town, areas);
         1: goToArea(areas);
@@ -45,8 +46,8 @@ begin
   SetMultiByteConversionCodePage(CP_UTF8);
   SetMultiByteRTLFileSystemCodePage(CP_UTF8);
 
-  cursoroff;
-  clearScreen();
+  cursoroff; //Désactivation du curseur de la console.
+  clearScreen(); //Vidage de l'écran
 
   menu[0] := 'Nouvelle partie';
   menu[1] := 'Quitter le jeu';
@@ -54,5 +55,5 @@ begin
   0: play();
   end;
 
-  cursoron;
+  cursoron; //Réactivation du curseur de la console.
 end.
