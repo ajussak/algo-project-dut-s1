@@ -22,7 +22,7 @@ begin
         displayDate(town);
         displayStats(town.resources);
 
-        menu[0] := 'Gérer les ouvriers';
+        menu[0] := 'Gérer les villageois';
         menu[1] := 'Se rendre à ...';
         menu[2] := 'Dormir';
         menu[3] := 'Quitter le jeu';
@@ -40,6 +40,11 @@ end;
 var
   menu:  array[0 .. 1] of string;
 begin
+
+  //Support de l'unicode sous Windows
+  SetMultiByteConversionCodePage(CP_UTF8);
+  SetMultiByteRTLFileSystemCodePage(CP_UTF8);
+
   cursoroff;
   clearScreen();
 

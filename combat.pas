@@ -5,7 +5,7 @@ unit combat;
 interface
 
 uses
-  Classes, SysUtils, GestionEcran;
+  Classes, SysUtils, Utils, UniteMenus;
 
 {rôle : gérer le système de combat entre un ou plusieurs villageois et un ou plusieurs adversaires}
 procedure combattre(nbVill : Integer);
@@ -20,7 +20,6 @@ end;
 {principe}
 procedure combattre(nbVill : Integer);
 var
-
    nbAdvs,
    nVillageois,
    nAdversaires,
@@ -40,8 +39,10 @@ var
    c : Char;
 
    res_combat : String;
-
+   menu: array[0 .. 1] of string;
+   endMenu: array of string;
 begin
+
   nbAdvs := nbVill;
   tour := 0;
   sortie := false;
@@ -49,6 +50,13 @@ begin
   cptKoA := 0;
   cptKoV := 0;
 
+  menu[0] := 'Oui';
+  menu[1] := 'Non';
+
+  setLength(endMenu, 1);
+  endMenu[0] := 'Retour au village';
+
+  clearScreen;
 
   writeln(nbVill, ' de vos villageois sont attaque par ', nbAdvs, ' pillar(s). Vous allez devoir vous battre !');
 
@@ -57,9 +65,6 @@ begin
     vill[i] := 100;
     advs[i] := 100;
   end;
-
-
-
     while sortie = false do
     begin
 
@@ -68,36 +73,34 @@ begin
 
          if vill[i] > 0 then
          writeln('Villageois ', i,' : ', vill[i])
-         else writeln('villageois ', i ,' K.O');
+         else writeln('Villageois ', i ,' K.O');
          end;
 
          for j:= 1 to nbAdvs do // attribut les pts a chacun des protagonistes dans la limite de leur nombre total
          begin
          if advs[j] > 0 then
-          writeln('pillars ', j,' : ', advs[j])
-         else writeln('pillars ', j ,' K.O');
+          writeln('Pillars ', j,' : ', advs[j])
+         else writeln('Pillars ', j ,' K.O');
          end;
 
           tour := tour+1;
-          writeln('Continuer ? (o/n)');
-          readln(c);
-          case c of
-            'o' : fin_tour := false;
+          writeln;
+          writeln('Continuer ?');
+          case displayMenu(menu) of
+            0 : fin_tour := false;
 
-            'n' :
+            1:
             begin
             res_combat := 'Vous avez fuit le combat !';
             sortie := true;
             end
-
-            else writeln('Resaisisez o OU n');
           end;
 
 
 
-        while fin_tour = false do
+        while (fin_tour = false) and (sortie = false) do
         begin
-             effacerEcran();
+             clearScreen();
 
             coup := alea(40); // defnit le nombre de dégâts du coup porté
 
@@ -111,15 +114,15 @@ begin
                 vill[nVillageois] := vill[nVillageois] - coup;
                 if vill[nVillageois] > 0 then
                   begin
-                       writeln('le villageois ', nVillageois ,' est touche, il perd ', coup ,' point de vie. Il lui en reste ', vill[nVillageois] ,'.' );
+                       writeln('Le villageois ', nVillageois ,' est touche, il perd ', coup ,' point de vie. Il lui en reste ', vill[nVillageois] ,'.' );
                   end
                 else
                 begin
-                   writeln('la guerre... La guerre... ne meurt jamais, mais pas les villageois ! Le villageois ', nVillageois ,' est touche, il est maintenant K.O.');
+                   writeln('La guerre... La guerre... ne meurt jamais, mais pas les villageois ! Le villageois ', nVillageois ,' est touche, il est maintenant K.O.');
                    cptKoV := cptKoV+1;
                   if cptKoV = nbVill then
                     begin
-                      res_combat := 'désole, mais les pillars ont ete plus fort que vous. Vous avez perdu';
+                      res_combat := 'Désole, mais les pillars ont ete plus fort que vous. Vous avez perdu';
                       sortie := true;
                     end;
                 end;
@@ -134,7 +137,7 @@ begin
                 if advs[nAdversaires] > 0 then
                  begin
                  if advs[nAdversaires] > 0 then
-                  writeln('le pillars ', nAdversaires ,' est touche, il perd ', coup ,' point de vie. Il lui en reste ', advs[nAdversaires] ,'.')
+                  writeln('Le pillars ', nAdversaires ,' est touche, il perd ', coup ,' point de vie. Il lui en reste ', advs[nAdversaires] ,'.')
                 else
                 begin
                     writeln('Pas si resistant que ca, ces pillars ! Le pillars ', nAdversaires ,' est touche, il est maintenant K.O.');
@@ -151,7 +154,9 @@ begin
             end;
 
          end;
-      writeln(res_combat);
+    writeln;
+    writeln(res_combat);
+    displayMenu(endMenu);
 end;
 
 

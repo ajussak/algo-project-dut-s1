@@ -4,10 +4,11 @@ unit VillageUnit;
 
 interface
 
-uses UnitResources, Utils, sysutils, UniteMenus, UnitArea;
+uses UnitResources, Utils, sysutils, UniteMenus, UnitArea, combat;
 type Mois = (janvier,fevrier,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,decembre);
 type personnage = record
     PV, affectedArea : Integer;
+    hasEaten: Boolean;
   end;
 type Village = record
     resources: resourceList;
@@ -76,12 +77,35 @@ end;
 
 procedure villagerConsume(var town: Village);
 var
-  i: Integer;
+  i, ateResources: Integer;
 begin
-  town.resources.pain := town.resources.pain - town.villagersNumber;
-  town.resources.legumes := town.resources.legumes - town.villagersNumber;
-  town.resources.viande := town.resources.viande - town.villagersNumber;
-  town.resources.poisson := town.resources.poisson - town.villagersNumber;
+  for i:=0 to town.villagersNumber - 1 do
+  begin
+    ateResources := 4;
+
+    if town.resources.pain - 1 < 0 then
+      ateResources := ateResources - 1
+    else
+      town.resources.pain := town.resources.pain - 1;
+
+    if town.resources.legumes - 1 < 0 then
+      ateResources := ateResources - 1
+    else
+      town.resources.legumes := town.resources.legumes - 1;
+
+    if town.resources.viande - 1 < 0 then
+      ateResources := ateResources - 1
+    else
+      town.resources.viande := town.resources.viande - 1;
+
+    if town.resources.poisson - 1 < 0 then
+      ateResources := ateResources - 1
+    else
+      town.resources.poisson := town.resources.poisson - 1;
+
+    town.villagers[i].hasEaten := ateResources > 0;
+
+  end;
 end;
 
 procedure tourSuivant(var town : Village; var areas: AreaRegistry);
@@ -102,6 +126,11 @@ begin
   end;
   villagerConsume(town);
   resourcesTurn(town, areas);
+
+  randomize;
+  if Random <= 0.1 then
+     combattre(town.villagersNumber);
+
 end;
 
 procedure affectArea(var villager: Personnage; var areas: AreaRegistry);
@@ -109,15 +138,17 @@ var
    menu: array of string;
    i, choice: Integer;
 begin
-  setLength(menu, Length(areas)+1);
+  setLength(menu, Length(areas)+2);
+  menu[0] := 'Aucune';
   for i := 0 to Length(areas) do
-      menu[i] := areas[i].name;
-  menu[Length(areas)] := 'Retour';
+      menu[i+1] := areas[i].name;
+  menu[Length(areas)+1] := 'Retour';
 
+  WriteLn;
   choice := displayMenu(menu);
 
-  if choice <> Length(areas) then
-     villager.affectedArea := choice;
+  if choice <> Length(areas) + 1 then
+     villager.affectedArea := choice - 1;
 
 end;
 
@@ -125,6 +156,7 @@ procedure manageVillager(var villager: Personnage; var areas: AreaRegistry);
 var
   menu: array[0 .. 1] of string;
 begin
+  WriteLn;
   menu[0] := 'Affecter à une zone...';
   menu[1] := 'Retour';
 
@@ -137,13 +169,16 @@ procedure manageVillagers(var town: Village; var areas: AreaRegistry);
 var
   i, choice, exit: Integer;
   menu: array of string;
-  affectation: string;
+  affectation, hasEaten: string;
   var villager: Personnage;
 begin
   exit := 0;
+  SetLength(menu, town.villagersNumber + 1);
   repeat
     clearScreen;
-    SetLength(menu, town.villagersNumber + 1);
+    WriteLn('Gérer les villageois');
+    WriteLn;
+
     for i := 0 to town.villagersNumber - 1 do
     begin
       villager := town.villagers[i];
@@ -152,7 +187,12 @@ begin
       else
         affectation := areas.[villager.affectedArea].name;
 
-      menu[i] := 'Villageois ' + IntToStr(i + 1) + ' : Points de vie (' + IntToStr(villager.PV) + ') Zone Affectée (' + affectation + ')';
+      if villager.hasEaten then
+         hasEaten := ''
+      else
+        hasEaten := ' N''a pas mangé';
+
+      menu[i] := 'Villageois ' + IntToStr(i + 1) + ' : Points de vie (' + IntToStr(villager.PV) + ') Zone Affectée (' + affectation + ')' + hasEaten;
     end;
     menu[town.villagersNumber] := 'Retour';
     choice := displayMenu(menu);
@@ -171,6 +211,7 @@ function newPersonnage():Personnage;
 begin;
   newPersonnage.PV := 100;
   newPersonnage.affectedArea := -1;
+  newPersonnage.hasEaten := true;
 end;
 
 end.
