@@ -8,9 +8,13 @@ type resourceList = record
     bois,poisson,viande,pain,lait,legumes,objetsPrecieux : Integer;
 end;
 
+{affiche les ressources à l'écran}
 procedure displayStats(var resources: resourceList);
+{crée une liste des ressources}
 function createResourcesList(): resourceList;
+{ajoute les ressources crées par les zones}
 procedure importResources(var village: resourceList; var area: resourceList);
+{change la météo et le multiplicateur de ressource}
 procedure weatherTurn(var village: resourceList; var weather: Integer);
 
 implementation
