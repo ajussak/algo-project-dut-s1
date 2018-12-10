@@ -11,7 +11,6 @@ end;
 procedure displayStats(var resources: resourceList);
 function createResourcesList(): resourceList;
 procedure importResources(var village: resourceList; var area: resourceList);
-procedure weatherTurn(var village: resourceList; var weather: Integer);
 
 implementation
 
@@ -51,22 +50,6 @@ begin
   village.lait := village.lait + area.lait;
   village.legumes := village.legumes + area.legumes;
   village.objetsPrecieux := village.objetsPrecieux + area.objetsPrecieux;
-end;
-
-procedure weatherTurn(var village: resourceList; var weather: Integer);
-var
-  weather: Integer;
-begin
-  weather:= random(3);
-  case lap of 
-    0 : weather := 0;
-        village.legumes := round(village.legumes)*1.5;
-    1 : weather := 1;
-        village.bois := round(village.bois)*0.75;
-    2 : weather := 2;
-        village.legumes := round(village.legumes)*0.75;
-    3 : weather := 3;
-        village.poisson := round(village.poisson)*0.75;
 end;
 
 end.
