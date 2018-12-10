@@ -20,8 +20,8 @@ end;
 type AreaRegistry = array of area;
 
   function availableAreaSelector(var areas: AreaRegistry): Integer;
-procedure goToArea(var areas: AreaRegistry);
-procedure registerAreas(var areas: AreaRegistry);
+  procedure goToArea(var areas: AreaRegistry);
+  procedure registerAreas(var areas: AreaRegistry);
   function getBuildableAreas(var areas: AreaRegistry): NumberArray;
 
 implementation

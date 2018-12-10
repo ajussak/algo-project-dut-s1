@@ -97,7 +97,7 @@ begin
   begin
     town.villagers[i].hasEaten := false;
 
-    for j := 0 to Length(EATABLE_RESOURCES) do
+    for j := 0 to Length(EATABLE_RESOURCES) - 1 do
     begin
       if town.resources[EATABLE_RESOURCES[j]] > 0 then
       begin
@@ -173,8 +173,8 @@ begin
   SetLength(menu, town.villagersNumber + 1);
   repeat
     clearScreen;
-    WriteLn('Gérer les villageois');
-    WriteLn;
+    WriteLn('========== Gérer les villageois ==========');
+    WriteLn();
 
     for i := 0 to town.villagersNumber - 1 do
     begin
@@ -204,8 +204,65 @@ begin
 end;
 
 procedure build(var town : Village; var areas : AreaRegistry);
+var
+  buildableAreasIDs : NumberArray;
+  i, choice : Integer;
+  menu : array of string;
+  a : area;
+  s : Boolean;
 begin
+  s := false;
+  repeat
+    clearScreen();
+    WriteLn('========== Construction ==========');
+    WriteLn();
 
+    displayStats(town.resources);
+
+    buildableAreasIDs := getBuildableAreas(areas);
+
+    if Length(buildableAreasIDs) > 0 then
+    begin
+      WriteLn('Choisez le bâtiment à construire:');
+      WriteLn();
+      SetLength(menu, Length(buildableAreasIDs) + 1);
+      for i := 0 to Length(buildableAreasIDs) - 1 do
+      begin
+        a := areas[buildableAreasIDs[i]];
+        menu[i] := a.name + ' (Requis :' + getRequirementString(a.required) + ')';
+      end;
+      menu[Length(buildableAreasIDs)] := 'Retour';
+      choice := displayMenu(menu);
+      if choice <> Length(buildableAreasIDs) then
+      begin
+        if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
+        begin
+          withdrawResources(town.resources, areas[buildableAreasIDs[choice]].required);
+          areas[buildableAreasIDs[choice]].enabled := true;
+        end
+        else
+        begin
+          WriteLn();
+          WriteLn('Vous avez pas asser de ressources pour construire cela.');
+          WriteLn();
+          SetLength(menu, 1);
+          menu[0] := 'Retour';
+          displayMenu(menu);
+        end;
+      end
+      else
+        s := true;
+    end
+    else
+    begin
+      WriteLn('Aucun bâtiment à construire disponible');
+      WriteLn();
+      SetLength(menu, 1);
+      menu[0] := 'Retour';
+      displayMenu(menu);
+      s := true;
+    end;
+  until s = true;
 end;
 
 function newPersonnage() : Personnage;
