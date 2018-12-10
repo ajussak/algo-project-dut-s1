@@ -4,9 +4,16 @@ unit UnitResources;
 
 interface
 
-type resourceList = record
-    bois,poisson,viande,pain,lait,legumes,objetsPrecieux : Integer;
-end;
+const BOIS = 0;
+const POISSON = 1;
+const VIANDE = 2;
+const PAIN = 3;
+const LAIT = 4;
+const LEGUMES = 5;
+const OBJETS_PRECIEUX = 6;
+const EATABLE_RESOURCES: array[0 .. 4] of Integer = (PAIN, VIANDE, LAIT, LEGUMES, POISSON);
+
+type resourceList = array[0 .. 6] of Integer;
 
 procedure displayStats(var resources: resourceList);
 function createResourcesList(): resourceList;
@@ -17,13 +24,13 @@ implementation
 procedure displayStats(var resources: resourceList);
 begin
   WriteLn('====== Ressources ======');
-  WriteLn('Bois : ', resources.bois);
-  WriteLn('Poisson : ', resources.poisson);
-  WriteLn('Viande : ', resources.viande);
-  WriteLn('Pain : ', resources.pain);
-  WriteLn('Lait : ', resources.lait);
-  WriteLn('Legumes : ', resources.legumes);
-  WriteLn('Objets Precieux : ', resources.objetsPrecieux);
+  WriteLn('Bois : ', resources[BOIS]);
+  WriteLn('Poisson : ', resources[POISSON]);
+  WriteLn('Viande : ', resources[VIANDE]);
+  WriteLn('Pain : ', resources[PAIN]);
+  WriteLn('Lait : ', resources[LAIT]);
+  WriteLn('Legumes : ', resources[LEGUMES]);
+  WriteLn('Objets Precieux : ', resources[OBJETS_PRECIEUX]);
   WriteLn;
 end;
 
@@ -31,25 +38,37 @@ function createResourcesList(): resourceList;
 var
   resources: resourceList;
 begin
-  resources.bois := 0;
-  resources.poisson := 0;
-  resources.viande := 0;
-  resources.pain := 0;
-  resources.lait := 0;
-  resources.legumes := 0;
-  resources.objetsPrecieux := 0;
+  resources[BOIS] := 0;
+  resources[POISSON] := 0;
+  resources[VIANDE] := 0;
+  resources[PAIN] := 0;
+  resources[LAIT] := 0;
+  resources[LEGUMES] := 0;
+  resources[OBJETS_PRECIEUX] := 0;
   createResourcesList := resources;
 end;
 
-procedure importResources(var village: resourceList; var area: resourceList);
+function hasEnoughResources(var source: resourceList; var target: resourceList): Boolean;
+var
+  i: Integer;
 begin
-  village.bois := village.bois + area.bois;
-  village.poisson := village.poisson + area.poisson;
-  village.viande := village.viande + area.viande;
-  village.pain := village.pain + area.pain;
-  village.lait := village.lait + area.lait;
-  village.legumes := village.legumes + area.legumes;
-  village.objetsPrecieux := village.objetsPrecieux + area.objetsPrecieux;
+  hasEnoughResources := true;
+
+  for i := 0 to Length(source) do
+    if source[i] < target[i] then
+    begin
+      hasEnoughResources := false;
+      exit;
+    end;
+end;
+
+
+procedure importResources(var village: resourceList; var area: resourceList);
+var
+  i: Integer;
+begin
+  for i := 0 to Length(village) do
+    village[i] := village[i] + area[i];
 end;
 
 end.

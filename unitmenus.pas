@@ -1,4 +1,4 @@
-unit UniteMenus;
+unit unitmenus;
 
 {$mode objfpc}{$H+}
 

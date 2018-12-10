@@ -1,6 +1,6 @@
-program Main;
+program main;
 
-uses UniteMenus, VillageUnit, crt, Utils, UnitArea, UnitResources;
+uses unitmenus, unitvillage, crt, Utils, UnitArea, UnitResources;
 
 procedure play();
 var
@@ -12,8 +12,7 @@ begin
   registerAreas(areas); //Définitions des zones
   debutPartie(town); //Initialisation du village
   exit := 0;
-  Repeat
-        //Vider la console
+  Repeat//Vider la console
         clearScreen();
 
         displayFile('data/Campement.txt', 1, false); //Afficher le texte descriptif du campement
@@ -24,7 +23,7 @@ begin
 
         //Définition du menu
         menu[0] := 'Gérer les villageois';
-        menu[1] := 'Construire'
+        menu[1] := 'Construire';
         menu[2] := 'Se rendre à ...';
         menu[3] := 'Dormir';
         menu[4] := 'Quitter le jeu';
@@ -32,9 +31,10 @@ begin
         menuChoice := displayMenu(menu); //Affichage du menu et récupération du choix de l'utilisateur
         case menuChoice of
         0: manageVillagers(town, areas);
-        1: goToArea(areas);
-        2: tourSuivant(town, areas);
-        3: exit := 1;
+          1: build(town, areas);
+          2 : goToArea(areas);
+          3 : tourSuivant(town, areas);
+          4 : exit := 1;
         end
   Until exit = 1;
 end;

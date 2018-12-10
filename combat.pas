@@ -4,13 +4,13 @@ unit combat;
 
 interface
 
-uses
-  Classes, SysUtils, Utils, UniteMenus;
-
 {rôle : gérer le système de combat entre un ou plusieurs villageois et un ou plusieurs adversaires}
 procedure combattre(nbVill : Integer);
 
 implementation
+
+uses
+  unitmenus, Utils;
 function alea(nb : Integer) : Integer;
 begin
   randomize();
