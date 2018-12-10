@@ -21,26 +21,18 @@ type AreaRegistry = array of area;
 
 procedure goToArea(var areas: AreaRegistry);
 procedure registerAreas(var areas: AreaRegistry);
+function areaSelector(var areas: AreaRegistry): Integer;
 
 implementation
 
 procedure goToArea(var areas: AreaRegistry);
 var
-  menu: array of string;
-  i, choice, l: Integer;
+  choice: Integer;
 begin
-  l := Length(areas);
-
   WriteLn;
   WriteLn('Selectionner la zone à visiter : ');
-  SetLength(menu, l + 1);
-  for i:= 0 to Length(areas) do
-      menu[i] := areas[i].name;
-  menu[l] := 'Retour';
-  choice := displayMenu(menu);
-  WriteLn(choice);
-  WriteLn(l);
-  if choice <> l then
+  choice := areaSelector(areas);
+  if choice <> -1 then
   begin
     clearScreen;
     displayFile('data/' + areas[choice].name + '.txt',1, true);
@@ -54,7 +46,7 @@ var
 begin
   j := 0;
   SetLength(r, Length(areas));
-  for i := 0 to Length(areas) do
+  for i := 0 to Length(areas) - 1 do
   begin
     if areas[i].enabled then
     begin
@@ -62,13 +54,32 @@ begin
        j := j + 1;
     end;
   end;
-  SetLength(r, j + 1);
+  SetLength(r, j);
   getAvailableAreas := r;
+end;
+
+function areaSelector(var areas: AreaRegistry): Integer;
+var
+  menu: array of string;
+  availbleAreas: NumberArray;
+  i, choice: Integer;
+begin
+  availbleAreas := getAvailableAreas(areas);
+  SetLength(menu, Length(availbleAreas) + 1);
+  for i := 0 to Length(availbleAreas) - 1 do
+    menu[i] := areas[availbleAreas[i]].name;
+  menu[Length(availbleAreas)] := 'Retour';
+
+  choice := displayMenu(menu);
+  if choice <> Length(availbleAreas) then
+     areaSelector := availbleAreas[choice]
+  else
+    areaSelector := -1;
 end;
 
 procedure registerAreas(var areas: AreaRegistry);
 begin
-  setLength(areas, 3);
+  setLength(areas, 4);
 
   areas[0].name := 'Forêt';
   areas[0].resources := createResourcesList();
@@ -78,7 +89,7 @@ begin
 
   areas[1].name := 'IUT';
   areas[1].resources := createResourcesList();
-  areas[1].resources.objetsPrecieux := 5;
+  areas[1].resources.objetsPrecieux := 1;
   areas[1].typeArea := base;
   areas[1].enabled := true;
 
@@ -94,7 +105,7 @@ begin
   areas[3].typeArea := buildable;
   areas[3].required := createResourcesList();
   areas[3].required.bois := 250;
-  areas[3].enabled := false;
+  areas[3].enabled := true;
 end;
 
 end.

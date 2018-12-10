@@ -77,35 +77,37 @@ end;
 
 procedure villagerConsume(var town: Village);
 var
-  i, ateResources: Integer;
+  i: Integer;
 begin
   for i:=0 to town.villagersNumber - 1 do
   begin
-    ateResources := 4;
+    town.villagers[i].hasEaten := true;
 
-    if town.resources.pain - 1 < 0 then
-      ateResources := ateResources - 1
+    if town.resources.pain > 0 then
+      town.resources.pain := town.resources.pain - 1
     else
-      town.resources.pain := town.resources.pain - 1;
-
-    if town.resources.legumes - 1 < 0 then
-      ateResources := ateResources - 1
-    else
-      town.resources.legumes := town.resources.legumes - 1;
-
-    if town.resources.viande - 1 < 0 then
-      ateResources := ateResources - 1
-    else
-      town.resources.viande := town.resources.viande - 1;
-
-    if town.resources.poisson - 1 < 0 then
-      ateResources := ateResources - 1
-    else
-      town.resources.poisson := town.resources.poisson - 1;
-
-    town.villagers[i].hasEaten := ateResources > 0;
-
-  end;
+    begin
+      if town.resources.legumes > 0 then
+         town.resources.legumes := town.resources.legumes - 1
+      else
+      begin
+        if town.resources.viande > 0 then
+            town.resources.viande := town.resources.viande - 1
+        else
+        begin
+          if town.resources.poisson > 0 then
+             town.resources.poisson := town.resources.poisson - 1
+          else
+          begin
+             if town.resources.lait > 0 then
+                town.resources.lait := town.resources.lait - 1
+             else
+                town.villagers[i].hasEaten := false
+          end
+        end
+      end
+    end
+  end
 end;
 
 procedure tourSuivant(var town : Village; var areas: AreaRegistry);
@@ -124,9 +126,12 @@ begin
     else
       town.m := succ(town.m);
   end;
-  villagerConsume(town);
-  resourcesTurn(town, areas);
 
+  villagerConsume(town); //Consomation des resources par les villageois
+  resourcesTurn(town, areas); //Production des resources par les villageois
+
+
+  //Evenements aléatoires
   randomize;
   if Random <= 0.1 then
      combattre(town.villagersNumber);
@@ -135,20 +140,13 @@ end;
 
 procedure affectArea(var villager: Personnage; var areas: AreaRegistry);
 var
-   menu: array of string;
-   i, choice: Integer;
+   choice: Integer;
 begin
-  setLength(menu, Length(areas)+2);
-  menu[0] := 'Aucune';
-  for i := 0 to Length(areas) do
-      menu[i+1] := areas[i].name;
-  menu[Length(areas)+1] := 'Retour';
-
   WriteLn;
-  choice := displayMenu(menu);
+  choice := areaSelector(areas);
 
-  if choice <> Length(areas) + 1 then
-     villager.affectedArea := choice - 1;
+  if choice <> - 1 then
+     villager.affectedArea := choice;
 
 end;
 

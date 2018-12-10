@@ -5,7 +5,7 @@ uses UniteMenus, VillageUnit, crt, Utils, UnitArea, UnitResources;
 procedure play();
 var
   menuChoice, exit: Integer;
-  menu:  array[0 .. 3] of string; //Entrées du menu
+  menu:  array[0 .. 4] of string; //Entrées du menu
   town: Village;
   areas: AreaRegistry;
 begin
@@ -24,9 +24,10 @@ begin
 
         //Définition du menu
         menu[0] := 'Gérer les villageois';
-        menu[1] := 'Se rendre à ...';
-        menu[2] := 'Dormir';
-        menu[3] := 'Quitter le jeu';
+        menu[1] := 'Construire'
+        menu[2] := 'Se rendre à ...';
+        menu[3] := 'Dormir';
+        menu[4] := 'Quitter le jeu';
 
         menuChoice := displayMenu(menu); //Affichage du menu et récupération du choix de l'utilisateur
         case menuChoice of
