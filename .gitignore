@@ -5,3 +5,5 @@ backup/
 *.lpi
 .idea/
 Main
+main
+*.iml
