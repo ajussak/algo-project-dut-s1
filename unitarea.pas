@@ -21,7 +21,7 @@ end;
 {Liste de zones}
 type AreaRegistry = array of area;
 
-  {Lance un menu de sélection des zones activées et retourne l'ID de la zone sélectioner, si aucune zone n'est sélectionné la fonction retourne -1}
+  {Lance un menu de sélection des zones activées et retourne l'ID d UTF8ToAnsi, AnsiToUTF8 - Almost all can be removed. e la zone sélectioner, si aucune zone n'est sélectionné la fonction retourne -1}
   function availableAreaSelector(var areas: AreaRegistry): Integer;
   {Visiter une zone selectioné par un menu}
   procedure goToArea(var areas: AreaRegistry);
@@ -39,6 +39,7 @@ uses
 procedure goToArea(var areas: AreaRegistry);
 var
   choice: Integer;
+  eMenu : array of string;
 begin
   WriteLn;
   WriteLn(UTF8ToAnsi('Selectionner la zone à visiter : '));
@@ -48,7 +49,26 @@ begin
   if choice <> -1 then //Si une est sélectionée
   begin
     clearScreen; //Vider la consolse
-    displayFile('data/' + areas[choice].name + '.txt',1, true); //Afficher le fichier qui contient le texte descriptif de la zone sélectionée.
+
+    //Easter Egg
+    if areas[choice].name = 'Ferme' then
+    begin
+      SetLength(eMenu, 2);
+
+      WriteLn();
+      eMenu[0] := 'S''adosser au mur.';
+      eMenu[1] := 'Retour';
+
+      displayFile('data/' + areas[choice].name + '.txt',1, false);
+
+      if displayMenu(eMenu) = 0 then
+      begin
+        areas[choice].enabled := false;
+        displayFile('data/nope.txt',1, true);
+      end;
+    end
+    else
+      displayFile('data/' + areas[choice].name + '.txt',1, true); //Afficher le fichier qui contient le texte descriptif de la zone sélectionée.
   end;
 end;
 
