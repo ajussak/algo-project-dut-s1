@@ -43,7 +43,7 @@ type
 implementation
 
 uses
-  combat, unitmenus, sysutils, Utils;
+  combat, unitmenus, sysutils, Utils, marchandage;
 
 procedure debutPartie(var town : Village);
 var
@@ -112,6 +112,8 @@ end;
 procedure tourSuivant(var town : Village; var areas : AreaRegistry);
 {incrémente de un la variable tour, incrémente de un la variable mois si tour =3 
 et incrémente de un la variable année si mois = décembre}
+var
+  rand: Real;
 begin
   town.tour := town.tour + 1;
   if town.tour = 3 then
@@ -132,8 +134,11 @@ begin
 
   //Evenements aléatoires
   randomize;
-  if Random <= 0.1 then
-    combattre(town.villagersNumber);
+  rand := Random;
+  if rand <= 0.1 then
+    combattre(town.villagersNumber)
+  else if (rand > 0.1) AND (rand <= 0.2) then
+    commerce(town);
 end;
 
 procedure affectArea(var villager : Personnage; var areas : AreaRegistry);
