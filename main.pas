@@ -51,6 +51,8 @@ begin
   TextColor(Green);
   clearScreen(); //Vidage de l'écran
 
+  displayFile('data/title.txt', 1, false);
+
   menu[0] := 'Nouvelle partie';
   menu[1] := 'Quitter le jeu';
   case displayMenu(menu) of
