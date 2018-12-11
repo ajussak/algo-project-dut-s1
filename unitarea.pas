@@ -41,7 +41,7 @@ var
   choice: Integer;
 begin
   WriteLn;
-  WriteLn('Selectionner la zone à visiter : ');
+  WriteLn(UTF8ToAnsi('Selectionner la zone à visiter : '));
 
   choice := availableAreaSelector(areas); //Menu de sélection d'une zone accessible
 
