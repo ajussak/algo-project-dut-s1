@@ -3,7 +3,7 @@ unit Marchandage;
 {$mode objfpc}{$H+}{$GOTO ON}
 
 interface
-  uses UniteMenus, VillageUnit, sysutils;
+  uses sysutils, unitvillage, unitmenus, Utils, UnitResources;
   type
     Tableau_String = array of String;
   {
@@ -69,6 +69,16 @@ implementation
            - Lait (entre 5 et 10 U -> 1 Obj.P).
   }
   procedure commerce(var town: Village);
+  const
+       // Valeur de réference de d'achat du bois.
+       QTRESSOURCESB1 = '50';
+       QTRESSOURCESB2 = '100';
+       QTRESSOURCESB3 = '150';
+
+       // Valeur de réference de d'achat du métal.
+       QTRESSOURCESM1 = '25';
+       QTRESSOURCESM2 = '50';
+       QTRESSOURCESM3 = '75';
   var
     menusChoixRessources, menusChoixRessourcesQtBois, menusChoixRessourcesQtMetal: Tableau_String;
     resChoix, QtNourritureI: Integer;
@@ -80,14 +90,14 @@ implementation
     SetLength(menusChoixRessourcesQtMetal, 4); // Ini de la taille de menusChoixRessourcesQtMetal.
 
     // Ini des val du tableau menusChoixRessourcesQtBois.
-    menusChoixRessourcesQtBois[0] := ' 1: 50';
-    menusChoixRessourcesQtBois[1] := ' 2: 100';
-    menusChoixRessourcesQtBois[2] := ' 3: 150';
+    menusChoixRessourcesQtBois[0] := ' 1: ' + QTRESSOURCESB1 + ' Bois = 1 Objet Precieux';
+    menusChoixRessourcesQtBois[1] := ' 2: ' + QTRESSOURCESB2 + ' Bois = 2 Objet Precieux';
+    menusChoixRessourcesQtBois[2] := ' 3: ' + QTRESSOURCESB3 + ' Bois = 3 Objet Precieux';
 
     // Ini des val du tableau menusChoixRessourcesQtMetal.
-    menusChoixRessourcesQtMetal[0] := ' 1: 25';
-    menusChoixRessourcesQtMetal[1] := ' 2: 50';
-    menusChoixRessourcesQtMetal[2] := ' 3: 75';
+    menusChoixRessourcesQtMetal[0] := ' 1: ' + QTRESSOURCESM1 + ' Metal = 1 Objet Precieux';
+    menusChoixRessourcesQtMetal[1] := ' 2: ' + QTRESSOURCESM2 + ' Metal =  = 2 Objet Precieux';
+    menusChoixRessourcesQtMetal[2] := ' 3: ' + QTRESSOURCESM3 + ' Metal = 3 Objet Precieux';
 
     // Appel de aleaRessources().
     menusChoixRessources := aleaRessources();
@@ -99,8 +109,11 @@ implementation
     // Label de début de fonction.
     MenusPrincipal:
 
+    // Clear Screen
+    clearScreen();
+
     // Cond pour savoir si on a assez d'argent.
-    if town.resources.objetsPrecieux <= 3 then
+    if town.resources[OBJETS_PRECIEUX] <= 3 then
       begin
        writeln('Tu n''as pas assez d''objet precieux reviens plus tard');
        readln();
@@ -127,19 +140,28 @@ implementation
 
                    case resChoix of
                         0:begin
-                            town.resources.objetsPrecieux := town.resources.objetsPrecieux - 1;
-                            town.resources.bois := town.resources.bois + 50;
-                            goto menusPrincipal;
+                            town.resources[OBJETS_PRECIEUX] := town.resources[OBJETS_PRECIEUX] - 1;
+                            town.resources[BOIS] := town.resources[BOIS] + StrToInt(QTRESSOURCESB1);
+                            writeln('Vous avez recus ', QTRESSOURCESB1, ' de Bois');
+                            writeln('Il vous reste ', town.resources[OBJETS_PRECIEUX], ' Objet Precieux');
+                            readln();
+                            exit;
                           end;
                         1:begin
-                            town.resources.objetsPrecieux := town.resources.objetsPrecieux - 2;
-                            town.resources.bois := town.resources.bois + 100;
-                            goto menusPrincipal;
+                            town.resources[OBJETS_PRECIEUX] := town.resources[OBJETS_PRECIEUX] - 2;
+                            town.resources[BOIS] := town.resources[BOIS] + StrToInt(QTRESSOURCESB2);
+                            writeln('Vous avez recus ', QTRESSOURCESB2, ' de Bois');
+                            writeln('Il vous reste ', town.resources[OBJETS_PRECIEUX], ' Objet Precieux');
+                            readln();
+                            exit;
                           end;
                         2:begin
-                            town.resources.objetsPrecieux := town.resources.objetsPrecieux - 3;
-                            town.resources.bois := town.resources.bois + 150;
-                            goto menusPrincipal;
+                            town.resources[OBJETS_PRECIEUX] := town.resources[OBJETS_PRECIEUX] - 3;
+                            town.resources[BOIS] := town.resources[BOIS] + StrToInt(QTRESSOURCESB3);
+                            writeln('Vous avez recus ', QTRESSOURCESB3, ' de Bois');
+                            writeln('Il vous reste ', town.resources[OBJETS_PRECIEUX], ' Objet Precieux');
+                            readln();
+                            exit;
                           end;
                         3:goto menusPrincipal;
                    end;
@@ -150,19 +172,28 @@ implementation
                    resChoix := displayMenu(menusChoixRessourcesQtMetal);
                    case resChoix of
                         0:begin
-                            town.resources.objetsPrecieux := town.resources.objetsPrecieux - 1;
-                            //town.resources.bois := town.resources.metal + 25;
-                            goto menusPrincipal;
+                            town.resources[OBJETS_PRECIEUX] := town.resources[OBJETS_PRECIEUX] - 1;
+                            //town.resources[METAL] := town.resources[METAL] + StrToInt(QTRESSOURCESM1);
+                            writeln('Vous avez recus ', QTRESSOURCESM1, ' de Metal');
+                            writeln('Il vous reste ', town.resources[OBJETS_PRECIEUX], ' Objet Precieux');
+                            readln();
+                            exit;
                           end;
                         1:begin
-                            town.resources.objetsPrecieux := town.resources.objetsPrecieux - 2;
-                            //town.resources.bois := town.resources.metal + 50;
-                            goto menusPrincipal;
+                            town.resources[OBJETS_PRECIEUX] := town.resources[OBJETS_PRECIEUX] - 2;
+                            //town.resources[METAL] := town.resources[METAL] + StrToInt(QTRESSOURCESM2);
+                            writeln('Vous avez recus ', QTRESSOURCESM2, ' de Metal');
+                            writeln('Il vous reste ', town.resources[OBJETS_PRECIEUX], ' Objet Precieux');
+                            readln();
+                            exit;
                           end;
                         2:begin
-                            town.resources.objetsPrecieux := town.resources.objetsPrecieux - 3;
-                            //town.resources.bois := town.resources.metal + 75;
-                            goto menusPrincipal;
+                            town.resources[OBJETS_PRECIEUX] := town.resources[OBJETS_PRECIEUX] - 3;
+                            //town.resources[METAL] := town.resources[METAL] + StrToInt(QTRESSOURCESM3);
+                            writeln('Vous avez recus ', QTRESSOURCESM3, ' de Metal');
+                            writeln('Il vous reste ', town.resources[OBJETS_PRECIEUX], ' Objet Precieux');
+                            readln();
+                            exit;
                           end;
                         3:goto menusPrincipal;
                    end;
@@ -174,15 +205,21 @@ implementation
                 QtNourritureI := Random(5)+5;
                 if menusChoixRessources[1] = ' 2: Pain' then
                   begin
-                   town.resources.objetsPrecieux := town.resources.objetsPrecieux - 1;
-                   town.resources.pain := town.resources.pain + QtNourritureI;
-                   goto menusPrincipal;
+                   town.resources[OBJETS_PRECIEUX] := town.resources[OBJETS_PRECIEUX] - 1;
+                   town.resources[PAIN] := town.resources[PAIN] + QtNourritureI;
+                   writeln('Vous avez recus ', QtNourritureI, ' de Pain');
+                   writeln('Il vous reste ', town.resources[OBJETS_PRECIEUX], ' Objet Precieux');
+                   readln();
+                   exit;
                   end
                 else if menusChoixRessources[1] = ' 2: Lait' then
                   begin
-                   town.resources.objetsPrecieux := town.resources.objetsPrecieux - 1;
-                   town.resources.lait := town.resources.lait + QtNourritureI;
-                   goto menusPrincipal;
+                   town.resources[OBJETS_PRECIEUX] := town.resources[OBJETS_PRECIEUX] - 1;
+                   town.resources[LAIT] := town.resources[LAIT] + QtNourritureI;
+                   writeln('Vous avez recus ', QtNourritureI, ' de Lait');
+                   writeln('Il vous reste ', town.resources[OBJETS_PRECIEUX], ' Objet Precieux');
+                   readln();
+                   exit;
                   end;
            end;
          2:begin
@@ -193,4 +230,3 @@ implementation
     end;
   end;
 end.
-
