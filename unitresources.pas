@@ -16,10 +16,15 @@ interface
 
   type resourceList = array[0 .. 6] of Integer;
 
+  {Afficher la liste des ressources}
   procedure displayStats(var resources: resourceList);
+  {Initialiser et retourner une liste de ressources.}
   function createResourcesList(): resourceList;
-  procedure importResources(var village: resourceList; var area: resourceList);
-  procedure withdrawResources(var village: resourceList; var area: resourceList);
+  {Additionner une liste de resources avec une autre}
+  procedure importResources(var list1 : resourceList; var list2 : resourceList);
+  {Soustraire une liste de resources avec une autre}
+  procedure withdrawResources(var list1 : resourceList; var list2 : resourceList);
+  {Mettre la liste des ressources requise en ligne}
   function getRequirementString(resources : resourceList) : string;
   function hasEnoughResources(var source: resourceList; var target: resourceList): Boolean;
 
@@ -28,6 +33,7 @@ implementation
 uses
   sysutils;
 
+{Afficher la liste des ressources}
 procedure displayStats(var resources: resourceList);
 var
   i : Integer;
@@ -40,6 +46,7 @@ begin
   WriteLn;
 end;
 
+{Mettre la liste des ressources requise en ligne}
 function getRequirementString(resources : resourceList) : string;
 var
   s : string;
@@ -47,13 +54,14 @@ var
 begin
   s := '';
 
-  for i := 0 to Length(resources) - 1 do
-    if resources[i] > 0 then
-      s := s + ' ' + IntToStr(resources[i]) + 'x ' + RESOURCES_STRING[i];
+  for i := 0 to Length(resources) - 1 do //Parcourir la liste des ressources
+    if resources[i] > 0 then // Si une resources est requise ( > 0)
+      s := s + ' ' + IntToStr(resources[i]) + 'x ' + RESOURCES_STRING[i]; //Ajouter la quantité et le nom de la ressource dans la chaîne de caratères.
 
   getRequirementString := s;
 end;
 
+{Initialiser et retourner une liste de ressources.}
 function createResourcesList(): resourceList;
 var
   resources: resourceList;
@@ -82,21 +90,22 @@ begin
     end;
 end;
 
-
-procedure withdrawResources(var village: resourceList; var area: resourceList);
+{Soustraire une liste de resources avec une autre}
+procedure withdrawResources(var list1 : resourceList; var list2 : resourceList);
 var
   i: Integer;
 begin
-  for i := 0 to Length(village) do
-    village[i] := village[i] - area[i];
+  for i := 0 to Length(list1) do
+    list1[i] := list1[i] - list2[i];
 end;
 
-procedure importResources(var village: resourceList; var area: resourceList);
+{Additionner une liste de resources avec une autre}
+procedure importResources(var list1 : resourceList; var list2 : resourceList);
 var
   i: Integer;
 begin
-  for i := 0 to Length(village) do
-    village[i] := village[i] + area[i];
+  for i := 0 to Length(list1) do
+    list1[i] := list1[i] + list2[i];
 end;
 
 end.

@@ -173,7 +173,7 @@ begin
   SetLength(menu, town.villagersNumber + 1);
   repeat
     clearScreen;
-    WriteLn('========== Gérer les villageois ==========');
+    WriteLn(UnicodeCharToString('========== Gérer les villageois =========='));
     WriteLn();
 
     for i := 0 to town.villagersNumber - 1 do
@@ -223,7 +223,7 @@ begin
 
     if Length(buildableAreasIDs) > 0 then
     begin
-      WriteLn('Choisez le bâtiment à construire:');
+      WriteLn(UnicodeCharToString('Choisez le bâtiment à construire:'));
       WriteLn();
       SetLength(menu, Length(buildableAreasIDs) + 1);
       for i := 0 to Length(buildableAreasIDs) - 1 do
@@ -255,7 +255,7 @@ begin
     end
     else
     begin
-      WriteLn('Aucun bâtiment à construire disponible');
+      WriteLn(UnicodeCharToString('Aucun bâtiment à construire disponible'));
       WriteLn();
       SetLength(menu, 1);
       menu[0] := 'Retour';
