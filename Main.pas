@@ -1,4 +1,4 @@
-Ouiprogram Main;
+program Main;
 
 uses UniteMenus, VillageUnit, crt, screenhelper, Utils;
 
