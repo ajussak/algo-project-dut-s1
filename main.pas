@@ -48,6 +48,7 @@ begin
   SetMultiByteRTLFileSystemCodePage(CP_UTF8);
 
   cursoroff; //Désactivation du curseur de la console.
+  TextColor(Green);
   clearScreen(); //Vidage de l'écran
 
   menu[0] := 'Nouvelle partie';
