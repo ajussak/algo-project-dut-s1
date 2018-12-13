@@ -12,6 +12,7 @@ type
   personnage = record
     affectedArea : Integer;
     hasEaten : Boolean;
+    deathCounter : Integer;
   end;
 type
   Village = record
@@ -95,15 +96,17 @@ var
 begin
   for i:=0 to town.villagersNumber - 1 do
   begin
+    town.villagers[i].deathcounter := town.villagers[i].deathcounter +1;
     town.villagers[i].hasEaten := false;
 
     for j := 0 to Length(EATABLE_RESOURCES) - 1 do
     begin
       if town.resources[EATABLE_RESOURCES[j]] > 0 then
       begin
-        town.villagers[i].hasEaten := true;
+        town.villagers[i].hasEaten := EATABLE_RESOURCES[j] <> POISSON;
         town.resources[EATABLE_RESOURCES[j]] := town.resources[EATABLE_RESOURCES[j]] - 1;
-        exit;
+        town.villagers[i].deathcounter := 0;
+        break;
       end;
     end;
   end
@@ -192,7 +195,7 @@ begin
       if villager.hasEaten then
         hasEaten := ''
       else
-        hasEaten := ' N''a pas mangé';
+        hasEaten := ' est malade';
 
       menu[i] := 'Villageois ' + IntToStr(i + 1) + ' Zone Affectée (' + affectation + ')' + hasEaten;
     end;
@@ -248,7 +251,7 @@ begin
         else
         begin
           WriteLn();
-          WriteLn('Vous avez pas asser de ressources pour construire cela.');
+          WriteLn('Vous avez pas assez de ressources pour construire cela.');
           WriteLn();
           SetLength(menu, 1);
           menu[0] := 'Retour';
@@ -276,6 +279,7 @@ begin
 ;
   newPersonnage.affectedArea := -1;
   newPersonnage.hasEaten := true;
+  newPersonnage.deathCounter := 0;
 end;
 
 end.
