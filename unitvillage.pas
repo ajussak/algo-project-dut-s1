@@ -84,7 +84,7 @@ begin
   begin
     areaID := town.villagers[i].affectedArea;
     if areaID <> -1 then
-      importResources(town.resources, areas[areaID].resources);
+      importResources(town.resources, areas[areaID].resources, 1);
   end;
 end;
 
@@ -110,7 +110,7 @@ begin
 end;
 
 procedure tourSuivant(var town : Village; var areas : AreaRegistry);
-{incrémente de un la variable tour, incrémente de un la variable mois si tour =3 
+{incrémente de un la variable tour, incrémente de un la variable mois si tour =3
 et incrémente de un la variable année si mois = décembre}
 begin
   town.tour := town.tour + 1;
@@ -237,7 +237,7 @@ begin
       begin
         if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
         begin
-          withdrawResources(town.resources, areas[buildableAreasIDs[choice]].required);
+          importResources(town.resources, areas[buildableAreasIDs[choice]].required, -1);
           areas[buildableAreasIDs[choice]].enabled := true;
         end
         else

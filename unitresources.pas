@@ -21,9 +21,7 @@ interface
   {Initialiser et retourner une liste de ressources.}
   function createResourcesList(): resourceList;
   {Additionner une liste de resources avec une autre}
-  procedure importResources(var list1 : resourceList; var list2 : resourceList);
-  {Soustraire une liste de resources avec une autre}
-  procedure withdrawResources(var list1 : resourceList; var list2 : resourceList);
+  procedure importResources(var list1 : resourceList; var list2 : resourceList; modifier: Real);
   {Mettre la liste des ressources requise en ligne}
   function getRequirementString(resources : resourceList) : string;
   function hasEnoughResources(var source: resourceList; var target: resourceList): Boolean;
@@ -90,22 +88,13 @@ begin
     end;
 end;
 
-{Soustraire une liste de resources avec une autre}
-procedure withdrawResources(var list1 : resourceList; var list2 : resourceList);
-var
-  i: Integer;
-begin
-  for i := 0 to Length(list1) do
-    list1[i] := list1[i] - list2[i];
-end;
-
 {Additionner une liste de resources avec une autre}
-procedure importResources(var list1 : resourceList; var list2 : resourceList);
+procedure importResources(var list1 : resourceList; var list2 : resourceList; modifier: Real);
 var
   i: Integer;
 begin
   for i := 0 to Length(list1) do
-    list1[i] := list1[i] + list2[i];
+    list1[i] := list1[i] + Round(list2[i] * modifier);
 end;
 
 end.
