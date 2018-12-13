@@ -58,7 +58,7 @@ begin
 
   clearScreen;
 
-  writeln(nbVill, ' de vos villageois sont attaque par ', nbAdvs, ' pillar(s). Vous allez devoir vous battre !');
+  writeln(nbVill, ' de vos villageois sont attaqués par ', nbAdvs, ' pillard(s). Vous allez devoir vous battre !');
 
   for i:= 1 to nbVill do // attribut les pts a chacun des protagonistes dans la limite de leur nombre total
   begin
@@ -115,15 +115,15 @@ begin
                 vill[nVillageois] := vill[nVillageois] - coup;
                 if vill[nVillageois] > 0 then
                   begin
-                       writeln('Le villageois ', nVillageois ,' est touche, il perd ', coup ,' point de vie. Il lui en reste ', vill[nVillageois] ,'.' );
+                       writeln('Le villageois ', nVillageois ,' est touche, il perd ', coup ,' points de vie. Il lui en reste ', vill[nVillageois] ,'.' );
                   end
                 else
                 begin
-                   writeln('La guerre... La guerre... ne meurt jamais, mais pas les villageois ! Le villageois ', nVillageois ,' est touche, il est maintenant K.O.');
+                   writeln('La guerre... La guerre... ne meurt jamais, mais pas les villageois ! Le villageois ', nVillageois ,' est touché, il est maintenant K.O.');
                    cptKoV := cptKoV+1;
                   if cptKoV = nbVill then
                     begin
-                      res_combat := 'Désole, mais les pillards ont ete plus fort que vous. Vous avez perdu';
+                      res_combat := 'Désolé, mais les pillards ont été plus fort que vous. Vous avez perdu';
                       sortie := true;
                     end;
                 end;
@@ -138,14 +138,14 @@ begin
                 if advs[nAdversaires] > 0 then
                  begin
                  if advs[nAdversaires] > 0 then
-                  writeln('Le pillards ', nAdversaires ,' est touche, il perd ', coup ,' point de vie. Il lui en reste ', advs[nAdversaires] ,'.')
+                  writeln('Le pillard ', nAdversaires ,' est touché, il perd ', coup ,' points de vie. Il lui en reste ', advs[nAdversaires] ,'.')
                 else
                 begin
-                    writeln('Pas si resistant que ca, ces pillards ! Le pillards ', nAdversaires ,' est touche, il est maintenant K.O.');
+                    writeln('Pas si résistant que ca, ces pillards ! Le pillard ', nAdversaires ,' est touché, il est maintenant K.O.');
                     cptKoA := cptKoA+1;
                     if cptKoA = nbAdvs then
                     begin
-                      res_combat := 'Felicitations ! Vous avez vaincu tout les pillards !';
+                      res_combat := 'Félicitations ! Vous avez vaincu tout les pillards !';
                       sortie := true;
                     end;
                 end;
