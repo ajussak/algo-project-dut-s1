@@ -89,12 +89,12 @@ implementation
     SetLength(menusChoixRessourcesQtBois, 4); // Ini de la taille de menusChoixRessourcesQtBois.
     SetLength(menusChoixRessourcesQtMetal, 4); // Ini de la taille de menusChoixRessourcesQtMetal.
 
-    // Ini des val du tableau menusChoixRessourcesQtBois.
+    // Init des val du tableau menusChoixRessourcesQtBois.
     menusChoixRessourcesQtBois[0] := ' 1: ' + QTRESSOURCESB1 + ' Bois = 1 Objet Precieux';
     menusChoixRessourcesQtBois[1] := ' 2: ' + QTRESSOURCESB2 + ' Bois = 2 Objet Precieux';
     menusChoixRessourcesQtBois[2] := ' 3: ' + QTRESSOURCESB3 + ' Bois = 3 Objet Precieux';
 
-    // Ini des val du tableau menusChoixRessourcesQtMetal.
+    // Init des val du tableau menusChoixRessourcesQtMetal.
     menusChoixRessourcesQtMetal[0] := ' 1: ' + QTRESSOURCESM1 + ' Metal = 1 Objet Precieux';
     menusChoixRessourcesQtMetal[1] := ' 2: ' + QTRESSOURCESM2 + ' Metal =  = 2 Objet Precieux';
     menusChoixRessourcesQtMetal[2] := ' 3: ' + QTRESSOURCESM3 + ' Metal = 3 Objet Precieux';
