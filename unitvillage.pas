@@ -18,8 +18,8 @@ type
     resources : resourceList;
     tour, annee : Integer;
     m : Mois;
-    villagers : array of personnage;
-    villagersNumber : Integer;
+    villagers : array of personnage; // Nombre villageois
+    villagersNumber : Integer; // Capacité maximal du village
   end;
 
   {Début de la nouvelle partie}
