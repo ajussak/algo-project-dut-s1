@@ -42,7 +42,7 @@ var
   eMenu : array of string;
 begin
   WriteLn;
-  WriteLn(UTF8ToAnsi('Selectionner la zone à visiter : '));
+  WriteLn(UTF8ToAnsi('Sélectionnez la zone à visiter : '));
 
   choice := availableAreaSelector(areas); //Menu de sélection d'une zone accessible
 
