@@ -12,6 +12,7 @@ type
   personnage = record
     affectedArea : Integer;
     hasEaten : Boolean;
+    busy: Integer;
   end;
 type
   Village = record
@@ -82,9 +83,13 @@ var
 begin
   for i:=0 to town.villagersNumber - 1 do
   begin
-    areaID := town.villagers[i].affectedArea;
-    if areaID <> -1 then
-      importResources(town.resources, areas[areaID].resources, 1);
+    if town.villagers[i].busy = -1 then // Si le villageois n'a pas de bâtiments à construire
+    begin
+      areaID := town.villagers[i].affectedArea;
+      if areaID <> -1 then
+        importResources(town.resources, areas[areaID].resources, 1);
+    end
+    if
   end;
 end;
 
@@ -271,6 +276,7 @@ begin
 ;
   newPersonnage.affectedArea := -1;
   newPersonnage.hasEaten := true;
+  newPersonnage.busy := -1; // -1 = Ne construit pas
 end;
 
 end.
