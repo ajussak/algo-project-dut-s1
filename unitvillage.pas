@@ -230,31 +230,38 @@ begin
     begin
       WriteLn(UTF8ToAnsi('Choisez le bâtiment à construire:'));
       WriteLn();
-      SetLength(menu, Length(buildableAreasIDs) + 1);
+      SetLength(menu, Length(buildableAreasIDs) + 2);
       for i := 0 to Length(buildableAreasIDs) - 1 do
       begin
         a := areas[buildableAreasIDs[i]];
         menu[i] := a.name + ' (Requis :' + getRequirementString(a.required) + ')';
+        menu[i] := 'Maison supplémentaire (Requis: 50 de bois)';
+
       end;
       menu[Length(buildableAreasIDs)] := 'Retour';
       choice := displayMenu(menu);
       if choice <> Length(buildableAreasIDs) then
-      begin
-        if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
-        begin
-          withdrawResources(town.resources, areas[buildableAreasIDs[choice]].required);
-          areas[buildableAreasIDs[choice]].enabled := true;
-        end
-        else
-        begin
-          WriteLn();
-          WriteLn('Vous avez pas asser de ressources pour construire cela.');
-          WriteLn();
-          SetLength(menu, 1);
-          menu[0] := 'Retour';
-          displayMenu(menu);
-        end;
-      end
+      	begin
+        	if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
+        		begin
+          			withdrawResources(town.resources, areas[buildableAreasIDs[choice]].required);
+          			areas[buildableAreasIDs[choice]].enabled := true;
+        		end
+        	else
+        		begin
+          			WriteLn();
+          			WriteLn('Vous avez pas asser de ressources pour construire cela.');
+          			WriteLn();
+          			SetLength(menu, 1);
+          			menu[0] := 'Retour';
+          			displayMenu(menu);
+        		end;
+      		end
+      else if choice = 2 then
+      	begin
+      		clearScreen();
+      		writeLn('LOL');
+      	end
       else
         s := true;
     end
