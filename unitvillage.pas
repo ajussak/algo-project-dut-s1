@@ -13,6 +13,8 @@ type
     affectedArea : Integer;
     hasEaten : Boolean;
     deathCounter : Integer;
+    level : Integer;
+    xp : Integer;
   end;
 type
   Village = record
