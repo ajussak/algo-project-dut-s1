@@ -15,8 +15,11 @@ type
   personnage = record
     affectedArea : Integer;
     hasEaten : Boolean;
+    busy : Integer;
+    deathCounter : Integer;
   end;
 type
+
   Village = record
     resources : resourceList;
     tour, annee : Integer;
@@ -49,7 +52,7 @@ uses
   combat, unitmenus, sysutils, Utils, marchandage;
 
 const
-  BUILD_TIME=3;
+  BUILD_TIME = 2;
 
 procedure debutPartie(var town : Village);
 var
@@ -137,10 +140,11 @@ begin
   end
 end;
 
-
-procedure tourSuivant(var town : Village; var areas : AreaRegistry);
 {incrémente de un la variable tour, incrémente de un la variable mois si tour =3
 et incrémente de un la variable année si mois = décembre}
+procedure tourSuivant(var town : Village; var areas : AreaRegistry);
+var
+  rand: Real;
 begin
   town.tour := town.tour + 1;
   if town.tour = 3 then
@@ -224,7 +228,7 @@ end;
 
 function selectVillager(var town : Village; var areas : AreaRegistry): Integer;
 var
-  i, choice : Integer;
+  i, choice, exit : Integer;
   menu : array of string;
   affectation, hasEaten : string;
 var
@@ -302,8 +306,6 @@ begin
 
     buildableAreasIDs := getBuildableAreas(areas);
 
-    if Length(buildableAreasIDs) > 0 then
-    begin
       WriteLn(UTF8ToAnsi('Choisez le bâtiment à construire:'));
       WriteLn();
       SetLength(menu, Length(buildableAreasIDs) + 2);
@@ -311,12 +313,12 @@ begin
       begin
         a := areas[buildableAreasIDs[i]];
         menu[i] := a.name + ' (Requis :' + getRequirementString(a.required) + ')';
-        menu[i] := 'Maison supplémentaire (Requis: 50 de bois)';
-
       end;
-      menu[Length(buildableAreasIDs)] := 'Retour';
+
+      menu[Length(buildableAreasIDs)] := 'Maison supplémentaire (Requis: 50 de bois)';
+      menu[Length(buildableAreasIDs) + 1] := 'Retour';
       choice := displayMenu(menu);
-      if choice <> Length(buildableAreasIDs) then
+      if choice <> Length(buildableAreasIDs) + 1 then
       begin
         if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
         begin
@@ -339,64 +341,19 @@ begin
         begin
           WriteLn();
           WriteLn('Vous avez pas asser de ressources pour construire cela.');
-<<<<<<< HEAD
-      	begin
-        	if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
-        		begin
-          			withdrawResources(town.resources, areas[buildableAreasIDs[choice]].required);
-          			areas[buildableAreasIDs[choice]].enabled := true;
-        		end
-        	else
-        		begin
-          			WriteLn();
-          			WriteLn('Vous avez pas asser de ressources pour construire cela.');
-          			WriteLn();
-          			SetLength(menu, 1);
-          			menu[0] := 'Retour';
-          			displayMenu(menu);
-        		end;
-      		end
-      else if choice = 2 then
-      	begin
-      		clearScreen();
-      		writeLn('LOL');
-      	end
-=======
-      begin
-        if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
-        begin
-          withdrawResources(town.resources, areas[buildableAreasIDs[choice]].required);
-          areas[buildableAreasIDs[choice]].enabled := true;
-        end
-        else
-        begin
-          WriteLn();
-          WriteLn('Vous avez pas assez de ressources pour construire cela.');
           WriteLn();
           SetLength(menu, 1);
           menu[0] := 'Retour';
           displayMenu(menu);
+          s := true;
         end;
       end
-      else
-        s := true;
-    end
-    else
-    begin
-      WriteLn(UTF8ToAnsi('Aucun bâtiment à construire disponible'));
-      WriteLn();
-      SetLength(menu, 1);
-      menu[0] := 'Retour';
-      displayMenu(menu);
-      s := true;
-    end;
   until s = true;
 end;
 
 function newPersonnage() : Personnage;
 {créer un type personnage (record) avec une variable ID, une variable PV et une variable travail}
 begin
-;
   newPersonnage.affectedArea := NO_AREA;
   newPersonnage.hasEaten := true;
   newPersonnage.deathCounter := 0;

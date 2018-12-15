@@ -103,7 +103,6 @@ implementation
     menusChoixRessourcesQtMetal[0] := ' 1: ' + QTRESSOURCESM1 + ' Metal = 1 Objet Precieux';
     menusChoixRessourcesQtMetal[1] := ' 2: ' + QTRESSOURCESM2 + ' Metal =  = 2 Objet Precieux';
     menusChoixRessourcesQtMetal[2] := ' 3: ' + QTRESSOURCESM3 + ' Metal = 3 Objet Precieux';
->>>>>>> v2
 
     // Appel de aleaRessources().
     menusChoixRessources := aleaRessources();
