@@ -97,5 +97,18 @@ begin
     list1[i] := list1[i] + Round(list2[i] * modifier);
 end;
 
+procedure weatherTurn(var village: resourceList);
+var
+  weather: Integer;
+begin
+  weather:= random(3);
+  case weather of
+    0 : village[LEGUMES] := round(village[LEGUMES]*1.5);
+    1 : village[BOIS] := round(village[BOIS]*0.75);
+    2 : village[LEGUMES] := round(village[LEGUMES]*0.75);
+    3 : village[POISSON] := round(village[POISSON]*0.75);
+  end;
+end;
+
 end.
 

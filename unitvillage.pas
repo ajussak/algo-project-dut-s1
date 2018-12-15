@@ -15,15 +15,14 @@ type
   personnage = record
     affectedArea : Integer;
     hasEaten : Boolean;
-    busy: Integer;
   end;
 type
   Village = record
     resources : resourceList;
     tour, annee : Integer;
     m : Mois;
-    villagers : array of personnage;
-    villagersNumber : Integer;
+    villagers : array of personnage; // Nombre villageois
+    villagersNumber : Integer; // Capacité maximal du village
   end;
 
   {Début de la nouvelle partie}
@@ -47,7 +46,7 @@ type
 implementation
 
 uses
-  combat, unitmenus, sysutils, Utils;
+  combat, unitmenus, sysutils, Utils, marchandage;
 
 const
   BUILD_TIME=3;
@@ -111,9 +110,10 @@ begin
     begin
       if town.resources[EATABLE_RESOURCES[j]] > 0 then
       begin
-        town.villagers[i].hasEaten := true;
+        town.villagers[i].hasEaten := EATABLE_RESOURCES[j] <> POISSON;
         town.resources[EATABLE_RESOURCES[j]] := town.resources[EATABLE_RESOURCES[j]] - 1;
-        exit;
+        town.villagers[i].deathcounter := 0;
+        break;
       end;
     end;
   end
@@ -157,13 +157,15 @@ begin
 
   villagerConsume(town); //Consomation des resources par les villageois
   resourcesTurn(town, areas); //Production des resources par les villageois
-  villagersUpdate(town, areas); //Mise à jour des villageois
 
 
   //Evenements aléatoires
   randomize;
-  if Random <= 0.1 then
-    combattre(town.villagersNumber);
+  rand := Random;
+  if rand <= 0.1 then
+    combattre(town.villagersNumber)
+  else if (rand > 0.1) AND (rand <= 0.2) then
+    commerce(town);
 end;
 
 { Si le villagois est entrain de construire, demander au joueur si veut annuler la construction}
@@ -200,9 +202,6 @@ var
   choice : Integer;
 begin
   WriteLn;
-  confirmBuildCanceling(villager);
-  WriteLn;
-
   choice := availableAreaSelector(areas);
 
   if choice <> - 1 then
@@ -228,8 +227,10 @@ var
   i, choice : Integer;
   menu : array of string;
   affectation, hasEaten : string;
+var
   villager : Personnage;
 begin
+  exit := 0;
   SetLength(menu, town.villagersNumber + 1);
   for i := 0 to town.villagersNumber - 1 do
   begin
@@ -243,10 +244,10 @@ begin
         affectation := affectation + ' [Construction :' + IntToStr(BUILD_TIME - villager.busy) + ' Tours restants]'
     end;
 
-    if villager.hasEaten then
-      hasEaten := ''
-    else
-      hasEaten := ' N''a pas mangé';
+      if villager.hasEaten then
+        hasEaten := ''
+      else
+        hasEaten := ' est malade';
 
     menu[i] := 'Villageois ' + IntToStr(i + 1) + ' Zone Affectée (' + affectation + ')' + hasEaten;
   end;
@@ -305,11 +306,13 @@ begin
     begin
       WriteLn(UTF8ToAnsi('Choisez le bâtiment à construire:'));
       WriteLn();
-      SetLength(menu, Length(buildableAreasIDs) + 1);
+      SetLength(menu, Length(buildableAreasIDs) + 2);
       for i := 0 to Length(buildableAreasIDs) - 1 do
       begin
         a := areas[buildableAreasIDs[i]];
         menu[i] := a.name + ' (Requis :' + getRequirementString(a.required) + ')';
+        menu[i] := 'Maison supplémentaire (Requis: 50 de bois)';
+
       end;
       menu[Length(buildableAreasIDs)] := 'Retour';
       choice := displayMenu(menu);
@@ -336,6 +339,39 @@ begin
         begin
           WriteLn();
           WriteLn('Vous avez pas asser de ressources pour construire cela.');
+<<<<<<< HEAD
+      	begin
+        	if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
+        		begin
+          			withdrawResources(town.resources, areas[buildableAreasIDs[choice]].required);
+          			areas[buildableAreasIDs[choice]].enabled := true;
+        		end
+        	else
+        		begin
+          			WriteLn();
+          			WriteLn('Vous avez pas asser de ressources pour construire cela.');
+          			WriteLn();
+          			SetLength(menu, 1);
+          			menu[0] := 'Retour';
+          			displayMenu(menu);
+        		end;
+      		end
+      else if choice = 2 then
+      	begin
+      		clearScreen();
+      		writeLn('LOL');
+      	end
+=======
+      begin
+        if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
+        begin
+          withdrawResources(town.resources, areas[buildableAreasIDs[choice]].required);
+          areas[buildableAreasIDs[choice]].enabled := true;
+        end
+        else
+        begin
+          WriteLn();
+          WriteLn('Vous avez pas assez de ressources pour construire cela.');
           WriteLn();
           SetLength(menu, 1);
           menu[0] := 'Retour';
@@ -363,6 +399,7 @@ begin
 ;
   newPersonnage.affectedArea := NO_AREA;
   newPersonnage.hasEaten := true;
+  newPersonnage.deathCounter := 0;
   newPersonnage.busy := DONT_BUILD; // Ne construit pas
 end;
 
