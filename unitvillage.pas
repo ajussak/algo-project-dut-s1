@@ -6,6 +6,9 @@ interface
 
 uses UnitResources, UnitArea;
 
+const
+DONT_BUILD=-1;
+
 type
   Mois = (janvier, fevrier, mars, avril, mai, juin, juillet, aout, septembre, octobre, novembre, decembre);
 type
@@ -46,6 +49,9 @@ implementation
 uses
   combat, unitmenus, sysutils, Utils;
 
+const
+  BUILD_TIME=3;
+
 procedure debutPartie(var town : Village);
 var
   i : Integer;
@@ -81,15 +87,14 @@ procedure resourcesTurn(var town : Village; var areas : AreaRegistry);
 var
   i, areaID : Integer;
 begin
-  for i:=0 to town.villagersNumber - 1 do
+  for i:=0 to town.villagersNumber - 1 do // On parcours la liste des villagageois
   begin
-    if town.villagers[i].busy = -1 then // Si le villageois n'a pas de bâtiments à construire
+    if town.villagers[i].busy = DONT_BUILD then // Si le villageois n'a pas de bâtiments à construire
     begin
-      areaID := town.villagers[i].affectedArea;
-      if areaID <> -1 then
-        importResources(town.resources, areas[areaID].resources, 1);
+      areaID := town.villagers[i].affectedArea; // On récupère l'identifiant de la zone attribuée au villageois
+      if areaID <> NO_AREA then // Si il n'a pas de zone attribuée
+        importResources(town.resources, areas[areaID].resources, 1); // On importe les resources de la zone
     end
-    if
   end;
 end;
 
@@ -114,6 +119,25 @@ begin
   end
 end;
 
+procedure villagersUpdate(var town : Village; var areas : AreaRegistry);
+var
+  i: Integer;
+begin
+  for i := 0 to town.villagersNumber - 1 do // On parcour la liste des villageois
+  begin
+    if (town.villagers[i].busy <> DONT_BUILD) and town.villagers[i].hasEaten then // Si le viliageois a un bâtiment à construire et qu'il a mangé
+      if town.villagers[i].busy >= BUILD_TIME - 1 then // Si le batiment a fini de se construire
+      begin
+        areas[town.villagers[i].affectedArea].enabled := true; // On active la zone
+        town.villagers[i].affectedArea := NO_AREA; // On lui désatribu la zone
+        town.villagers[i].busy := DONT_BUILD; // On indique qu'il ne construit rien
+      end
+      else
+        town.villagers[i].busy := town.villagers[i].busy + 1;
+  end
+end;
+
+
 procedure tourSuivant(var town : Village; var areas : AreaRegistry);
 {incrémente de un la variable tour, incrémente de un la variable mois si tour =3
 et incrémente de un la variable année si mois = décembre}
@@ -133,6 +157,7 @@ begin
 
   villagerConsume(town); //Consomation des resources par les villageois
   resourcesTurn(town, areas); //Production des resources par les villageois
+  villagersUpdate(town, areas); //Mise à jour des villageois
 
 
   //Evenements aléatoires
@@ -141,11 +166,43 @@ begin
     combattre(town.villagersNumber);
 end;
 
+{ Si le villagois est entrain de construire, demander au joueur si veut annuler la construction}
+procedure confirmBuildCanceling(var villager: personnage);
+var
+  menu: array of string;
+begin
+  if villager.busy <> DONT_BUILD then // Si le villageois est entraint de construire un bâtiment
+  begin
+    WriteLn('Ce villageois est entrain de construire un bâtiment.');
+    WriteLn('Cette action va annuler la construction et les resources dépensées seront perdues.');
+    WriteLn();
+    WriteLn('Voulez-vous continuer ?');
+    WriteLn();
+
+    //Définition du menu
+    SetLength(menu, 2);
+    menu[0] := 'Oui';
+    menu[1] := 'Non';
+
+    if displayMenu(menu) = 0 then //Si le joueur à confirmer
+    begin
+      villager.busy := DONT_BUILD;
+      villager.affectedArea := NO_AREA;
+    end;
+
+
+  end;
+end;
+
+
 procedure affectArea(var villager : Personnage; var areas : AreaRegistry);
 var
   choice : Integer;
 begin
   WriteLn;
+  confirmBuildCanceling(villager);
+  WriteLn;
+
   choice := availableAreaSelector(areas);
 
   if choice <> - 1 then
@@ -166,41 +223,57 @@ begin
   end;
 end;
 
-procedure manageVillagers(var town : Village; var areas : AreaRegistry);
+function selectVillager(var town : Village; var areas : AreaRegistry): Integer;
 var
-  i, choice, exit : Integer;
+  i, choice : Integer;
   menu : array of string;
   affectation, hasEaten : string;
-var
   villager : Personnage;
 begin
-  exit := 0;
   SetLength(menu, town.villagersNumber + 1);
+  for i := 0 to town.villagersNumber - 1 do
+  begin
+    villager := town.villagers[i];
+    if villager.affectedArea = NO_AREA then
+      affectation := 'Aucune'
+    else
+    begin
+      affectation := areas.[villager.affectedArea].name;
+      if villager.busy <> DONT_BUILD then
+        affectation := affectation + ' [Construction :' + IntToStr(BUILD_TIME - villager.busy) + ' Tours restants]'
+    end;
+
+    if villager.hasEaten then
+      hasEaten := ''
+    else
+      hasEaten := ' N''a pas mangé';
+
+    menu[i] := 'Villageois ' + IntToStr(i + 1) + ' Zone Affectée (' + affectation + ')' + hasEaten;
+  end;
+  menu[town.villagersNumber] := 'Retour';
+
+  choice := displayMenu(menu);
+
+  if choice <> town.villagersNumber then
+    selectVillager := choice
+  else
+    selectVillager := -1;
+end;
+
+procedure manageVillagers(var town : Village; var areas : AreaRegistry);
+var
+  villagerID, exit : Integer;
+begin
+  exit := 0;
   repeat
     clearScreen;
     WriteLn(UTF8ToAnsi('========== Gérer les villageois =========='));
     WriteLn();
 
-    for i := 0 to town.villagersNumber - 1 do
-    begin
-      villager := town.villagers[i];
-      if villager.affectedArea = -1 then
-        affectation := 'Aucune'
-      else
-        affectation := areas.[villager.affectedArea].name;
+    villagerID := selectVillager(town, areas);
 
-      if villager.hasEaten then
-        hasEaten := ''
-      else
-        hasEaten := ' N''a pas mangé';
-
-      menu[i] := 'Villageois ' + IntToStr(i + 1) + ' Zone Affectée (' + affectation + ')' + hasEaten;
-    end;
-    menu[town.villagersNumber] := 'Retour';
-    choice := displayMenu(menu);
-
-    if choice <> town.villagersNumber then
-      manageVillager(town.villagers[choice], areas)
+    if villagerID <> -1 then
+      manageVillager(town.villagers[villagerID], areas)
     else
       exit := 1;
 
@@ -208,10 +281,12 @@ begin
 
 end;
 
+
+
 procedure build(var town : Village; var areas : AreaRegistry);
 var
   buildableAreasIDs : NumberArray;
-  i, choice : Integer;
+  i, choice, villagerID : Integer;
   menu : array of string;
   a : area;
   s : Boolean;
@@ -242,8 +317,20 @@ begin
       begin
         if hasEnoughResources(town.resources, areas[buildableAreasIDs[choice]].required) then
         begin
-          importResources(town.resources, areas[buildableAreasIDs[choice]].required, -1);
-          areas[buildableAreasIDs[choice]].enabled := true;
+
+          WriteLn('Veuillez sélectionner un villageois à attribuer à la construction : ');
+          WriteLn();
+
+          villagerID := selectVillager(town, areas);
+
+          if villagerID <> -1 then
+          begin
+            WriteLn;
+            confirmBuildCanceling(town.villagers[villagerID]);
+            WriteLn;
+            town.villagers[villagerID].affectedArea := buildableAreasIDs[choice];
+            town.villagers[villagerID].busy := 0;
+          end;
         end
         else
         begin
@@ -274,9 +361,9 @@ function newPersonnage() : Personnage;
 {créer un type personnage (record) avec une variable ID, une variable PV et une variable travail}
 begin
 ;
-  newPersonnage.affectedArea := -1;
+  newPersonnage.affectedArea := NO_AREA;
   newPersonnage.hasEaten := true;
-  newPersonnage.busy := -1; // -1 = Ne construit pas
+  newPersonnage.busy := DONT_BUILD; // Ne construit pas
 end;
 
 end.

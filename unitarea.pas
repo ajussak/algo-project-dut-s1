@@ -6,6 +6,9 @@ interface
 
 uses UnitResources;
 
+const
+NO_AREA = -1;
+
 type areaType = (base, buildable); //Types de zones (base = Accesible dès le debut, buildable = Bâtissable)
 type NumberArray = array of Integer;
 
@@ -21,7 +24,7 @@ end;
 {Liste de zones}
 type AreaRegistry = array of area;
 
-  {Lance un menu de sélection des zones activées et retourne l'ID d UTF8ToAnsi, AnsiToUTF8 - Almost all can be removed. e la zone sélectioner, si aucune zone n'est sélectionné la fonction retourne -1}
+  {Lance un menu de sélection des zones activées et retourne l'ID de la zone sélectioné, si aucune zone n'est sélectionné la fonction retourne -1 (NO_AREA)}
   function availableAreaSelector(var areas: AreaRegistry): Integer;
   {Visiter une zone selectioné par un menu}
   procedure goToArea(var areas: AreaRegistry);
@@ -46,7 +49,7 @@ begin
 
   choice := availableAreaSelector(areas); //Menu de sélection d'une zone accessible
 
-  if choice <> -1 then //Si une est sélectionée
+  if choice <> NO_AREA then //Si une est sélectionée
   begin
     clearScreen; //Vider la consolse
 
@@ -112,7 +115,7 @@ begin
   getAvailableAreas := r; //Retourner le tableau r
 end;
 
-{Lance un menu de sélection des zones activées et retourne l'ID de la zone sélectioner, si aucune zone n'est sélectionné la fonction retourne -1}
+{Lance un menu de sélection des zones activées et retourne l'ID de la zone sélectioner, si aucune zone n'est sélectionné la fonction retourne -1 (NO_AREA)}
 function availableAreaSelector(var areas: AreaRegistry): Integer;
 var
   menu: array of string;
@@ -134,7 +137,7 @@ begin
   if choice <> Length(availbleAreas) then //Si le choix est différent de Retour
     availableAreaSelector := availbleAreas[choice] //Retourne l'ID de la zone sélectionné
   else
-    availableAreaSelector := -1;
+    availableAreaSelector := NO_AREA;
 end;
 
 {Enregistrement des différentes zones du jeu}
