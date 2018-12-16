@@ -423,6 +423,7 @@ function confirmBusinessCanceling(var villager: personnage): Boolean;
 var
   menu: array of string;
 begin
+  confirmBusinessCanceling := true;
   if villager.busy <> NOT_BUSY then // Si le villageois est entraint de construire un bâtiment ou n'est pas en expédtion
   begin
     confirmBusinessCanceling := false;
@@ -449,6 +450,7 @@ begin
       begin
         villager.busy := NOT_BUSY; // Le joueur ne construit rien
         villager.affectedArea := NO_AREA; // Il n'a plus de zone affectuées.
+        confirmBusinessCanceling := true;
       end;
     end;
   end;
