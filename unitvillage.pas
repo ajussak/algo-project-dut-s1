@@ -7,8 +7,8 @@ interface
 uses UnitResources, UnitArea;
 
 const
-  DONT_BUILD = -1;
-  BUILD_TIME = 2;
+  NOT_BUSY = -1;
+  BUSY_TIME = 2;
   TIME_TO_DEATH = 3;
   MAX_VILLAGERS = 20;
 
@@ -184,7 +184,7 @@ begin
   for i:=0 to Length(aliveVillagerIDs) - 1 do // On parcours la liste des villageois en vie
   begin
     villager := @town.villagers[aliveVillagerIDs[i]];
-    if (villager^.busy = DONT_BUILD) and (not villager^.isSick) then // Si le villageois n'a pas de bâtiments à construire et il n'est pas malade
+    if (villager^.busy = NOT_BUSY) and (not villager^.isSick) then // Si le villageois n'a pas de bâtiments à construire et il n'est pas malade
     begin
       areaID := villager^.affectedArea; // On récupère l'identifiant de la zone attribuée au villageois
       if areaID <> NO_AREA then // Si il n'a pas de zone attribuée
@@ -308,8 +308,8 @@ begin
     end
     else // Sinon
     begin
-      if (villager^.busy <> DONT_BUILD) and (not villager^.isSick) then // Si le viliageois est occupé et qu'il n'est pas malade
-        if villager^.busy >= BUILD_TIME - 1 then // Si le batiment a fini de se construire
+      if (villager^.busy <> NOT_BUSY) and (not villager^.isSick) then // Si le viliageois est occupé et qu'il n'est pas malade
+        if villager^.busy >= BUSY_TIME - 1 then // Si le batiment a fini de se construire
       begin
 
         case villager^.affectedArea of
@@ -321,7 +321,7 @@ begin
         end;
 
         villager^.affectedArea := NO_AREA; // On lui désatribu la zone
-        villager^.busy := DONT_BUILD; // On indique qu'il ne construit rien
+        villager^.busy := NOT_BUSY; // On indique qu'il ne construit rien
       end
       else
           villager^.busy := town.villagers[i].busy + 1; // On avance la construction du bâtiment.
@@ -418,28 +418,38 @@ begin
     discorverNewVillager(town); // Un nouveau villageois
 end;
 
-{ Si le villagois est entrain de construire, demander au joueur si veut annuler la construction}
-procedure confirmBuildCanceling(var villager: personnage);
+{ Si le villagois est entrain de construire, demander au joueur si veut annuler la construction ou si il est expédition, annuler directement l'expédition}
+function confirmBusinessCanceling(var villager: personnage): Boolean;
 var
   menu: array of string;
 begin
-  if villager.busy <> DONT_BUILD then // Si le villageois est entraint de construire un bâtiment
+  if villager.busy <> NOT_BUSY then // Si le villageois est entraint de construire un bâtiment ou n'est pas en expédtion
   begin
-    WriteLn('Ce villageois est entrain de construire un bâtiment.');
-    WriteLn('Cette action va annuler la construction et les resources dépensées seront perdues.');
-    WriteLn();
-    WriteLn('Voulez-vous continuer ?');
-    WriteLn();
-
-    //Définition du menu
-    SetLength(menu, 2);
-    menu[0] := 'Oui';
-    menu[1] := 'Non';
-
-    if displayMenu(menu) = 0 then //Si le joueur à confirmer
+    confirmBusinessCanceling := false;
+    if villager.affectedArea = EXPEDITION_FAKE_AREA then // Si le joueur est un expédition.
     begin
-      villager.busy := DONT_BUILD; // Le joueur ne construit rien
+      villager.busy := NOT_BUSY; // Le joueur ne construit rien
       villager.affectedArea := NO_AREA; // Il n'a plus de zone affectuées.
+      confirmBusinessCanceling := true;
+    end
+    else
+    begin
+      WriteLn('Ce villageois est entrain de construire un bâtiment.');
+      WriteLn('Cette action va annuler la construction et les resources dépensées seront perdues.');
+      WriteLn();
+      WriteLn('Voulez-vous continuer ?');
+      WriteLn();
+
+      //Définition du menu
+      SetLength(menu, 2);
+      menu[0] := 'Oui';
+      menu[1] := 'Non';
+
+      if displayMenu(menu) = 0 then //Si le joueur à confirmer
+      begin
+        villager.busy := NOT_BUSY; // Le joueur ne construit rien
+        villager.affectedArea := NO_AREA; // Il n'a plus de zone affectuées.
+      end;
     end;
   end;
 end;
@@ -452,9 +462,10 @@ begin
   WriteLn;
   choice := availableAreaSelector(areas); // Ouvre un menu selection de zone et retourne l'ID de la zone sélectionée.
 
-  if choice <> - 1 then // Si une zone bien été sélectionée.
+  if (choice <> - 1) and confirmBusinessCanceling(villager) then // Si une zone bien été sélectionée et que si le villageois est occupé, le joueur à valider le changement.
+  begin
     villager.affectedArea := choice; // On attribu la zone au villageois
-
+  end;
 end;
 
 {Obtenir la liste des identifiants des zone bâtissables qui ne sont pas encore construites ou pas encore en cours de construcution}
@@ -477,7 +488,7 @@ begin
       for k := 0 to Length(aliveVillagerIDs) - 1 do // On parcours la liste des villageois en vie
       begin
         villager := @town.villagers[k]; // On obtiens le villageois courrant
-        if (villager^.busy <> DONT_BUILD) and (villager^.affectedArea = i) then // Si le villageois construit le bâtiments
+        if (villager^.busy <> NOT_BUSY) and (villager^.affectedArea = i) then // Si le villageois construit le bâtiments
         begin
           villageBuilds := true; // Un villageois construit le bâtiments.
           break; //On sort de la boucles des villageois en vie.
@@ -534,15 +545,17 @@ begin
     if hasEnoughResources(town.resources, requiredResources) then // Si on a assez de ressources
     begin
       WriteLn;
-      confirmBuildCanceling(villager);
-      WriteLn;
+      if confirmBusinessCanceling(villager) then
+      begin
+        WriteLn;
 
-      if choice = Length(buildableAreasIDs) then // Si on construit une maison
-        villager.affectedArea := HOUSE_FAKE_AREA
-      else
-        villager.affectedArea := buildableAreasIDs[choice];
+        if choice = Length(buildableAreasIDs) then // Si on construit une maison
+          villager.affectedArea := HOUSE_FAKE_AREA
+        else
+          villager.affectedArea := buildableAreasIDs[choice];
 
-      villager.busy := 0;
+        villager.busy := 0;
+      end;
     end
     else
     begin
@@ -605,13 +618,13 @@ begin
       begin
         case villager.affectedArea of
           HOUSE_FAKE_AREA : affectation := 'Maison';
-          EXPEDITION_FAKE_AREA : affectation := 'Expédition [' + IntToStr(BUILD_TIME - villager.busy) + ' Tours restants]'
+          EXPEDITION_FAKE_AREA : affectation := 'Expédition [' + IntToStr(BUSY_TIME - villager.busy) + ' Tours restants]'
         end;
       end
       else
         affectation := areas[villager.affectedArea].name;
-      if (villager.busy <> DONT_BUILD) and (villager.affectedArea <> EXPEDITION_FAKE_AREA) then // Si le villageois est entrain de construire un bâtiment et n'est pas en expédition
-        affectation := affectation + ' [Construction :' + IntToStr(BUILD_TIME - villager.busy) + ' Tours restants]'
+      if (villager.busy <> NOT_BUSY) and (villager.affectedArea <> EXPEDITION_FAKE_AREA) then // Si le villageois est entrain de construire un bâtiment et n'est pas en expédition
+        affectation := affectation + ' [Construction :' + IntToStr(BUSY_TIME - villager.busy) + ' Tours restants]'
     end;
 
     if not villager.isSick then // Si le villageois n'est pas malade
@@ -662,7 +675,7 @@ begin
   newPersonnage.affectedArea := NO_AREA;
   newPersonnage.isSick := false;
   newPersonnage.deathCounter := -1;
-  newPersonnage.busy := DONT_BUILD; // Ne construit pas
+  newPersonnage.busy := NOT_BUSY; // Ne construit pas
   newPersonnage.name := getFileLine('data/villager.list', town.villagersNumber - 1);
   newPersonnage.dead := false;
 end;

@@ -133,19 +133,19 @@ begin
 
   areas[1].name := 'IUT';
   areas[1].resources := createResourcesList();
-  areas[1].resources[OBJETS_PRECIEUX] := 1;
+  areas[1].resources[OBJETS_PRECIEUX] := 2;
   areas[1].typeArea := discoverable;
   areas[1].enabled := false;
 
   areas[2].name := 'Lac';
   areas[2].resources := createResourcesList();
-  areas[2].resources[POISSON] := 2;
+  areas[2].resources[POISSON] := 5;
   areas[2].typeArea := discoverable;
   areas[2].enabled := false;
 
   areas[3].name := 'Ferme';
   areas[3].resources := createResourcesList();
-  areas[3].resources[LEGUMES] := 2;
+  areas[3].resources[LEGUMES] := 5;
   areas[3].typeArea := buildable;
   areas[3].required := createResourcesList();
   areas[3].required[BOIS] := 250;
@@ -153,7 +153,7 @@ begin
 
   areas[4].name := 'Décharge';
   areas[4].resources := createResourcesList();
-  areas[4].resources[METAUX] := 2;
+  areas[4].resources[METAUX] := 5;
   areas[4].typeArea := discoverable;
   areas[4].enabled := false;
 
