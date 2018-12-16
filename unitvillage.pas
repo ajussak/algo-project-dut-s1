@@ -652,7 +652,7 @@ begin
   exit := 0;
   repeat
     clearScreen; // Vider la console
-    WriteLn(UTF8ToAnsi('========== Gérer les villageois =========='));
+    WriteLn('========== Gérer les villageois ==========');
     WriteLn();
 
     villagerID := selectVillagerID(town, areas); // On ouvre le menu de selection d'un villageois et on récupère son ID.
