@@ -1,9 +1,6 @@
-program main;
+﻿program main;
 
 uses unitmenus, unitvillage, crt, Utils, UnitArea;
-{$ifdef Win32}
-  uses windows;
-{$endif}
 
 procedure play();
 var
@@ -46,11 +43,8 @@ var
   menu:  array[0 .. 1] of string;
 begin
   //Support de l'unicode sous Windows
-  {$ifdef Win32}
-    SetMultiByteConversionCodePage(CP_UTF8);
-    SetMultiByteRTLFileSystemCodePage(CP_UTF8);
-    SetConsoleOutputCP(CP_UTF8);
-  {$endif}
+  SetMultiByteConversionCodePage(CP_UTF8);
+  SetMultiByteRTLFileSystemCodePage(CP_UTF8);
 
 
 

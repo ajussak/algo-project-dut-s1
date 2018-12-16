@@ -1,4 +1,4 @@
-unit UnitArea;
+﻿unit UnitArea;
 
 {$mode objfpc}{$H+}
 

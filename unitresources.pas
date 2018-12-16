@@ -1,4 +1,4 @@
-unit UnitResources;
+﻿unit UnitResources;
 
 {$mode objfpc}{$H+}
 

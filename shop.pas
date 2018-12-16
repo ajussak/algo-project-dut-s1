@@ -1,4 +1,4 @@
-unit shop;
+﻿unit shop;
 
 {$mode objfpc}{$H+}{$GOTO ON}
 

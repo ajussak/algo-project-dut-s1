@@ -1,4 +1,4 @@
-unit combat;
+﻿unit combat;
 
 {$mode objfpc}{$H+}
 

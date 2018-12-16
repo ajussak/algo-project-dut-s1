@@ -1,4 +1,4 @@
-unit Utils;
+﻿unit Utils;
 
 {$mode objfpc}{$H+}
 
