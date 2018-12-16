@@ -266,6 +266,25 @@ begin
   end;
 end;
 
+{Fin du jeu}
+procedure happyEnd();
+var
+  menu: array of string;
+begin
+  clearScreen(); // Vider la console
+  displayFile('data/prsq_happy_end.txt', 1, false); // Afficher l'ecran de fin
+  WriteLn();
+
+  //Définition de l'ecran de fin
+  SetLength(menu, 1);
+  menu[0] := 'Quitter le jeux';
+
+  displayMenu(menu); // Afficher le menu
+
+  halt(0); //Quitter le programme
+
+end;
+
 {Mises à jour des villageois}
 procedure villagersUpdate(var town : Village; var areas : AreaRegistry);
 var
@@ -296,6 +315,7 @@ begin
         case villager^.affectedArea of
           HOUSE_FAKE_AREA: town.houses := town.houses + 1;
           EXPEDITION_FAKE_AREA: expeditionResult(town, areas);
+          5: happyEnd(); // Si on construit le bâtiment à l'ID 5
           else
             areas[villager^.affectedArea].enabled := true;
         end;

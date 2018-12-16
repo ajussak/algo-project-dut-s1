@@ -123,7 +123,7 @@ end;
 {Enregistrement des différentes zones du jeu}
 procedure registerAreas(var areas: AreaRegistry);
 begin
-  setLength(areas, 5); // Initialisation le tableau des zone
+  setLength(areas, 6); // Initialisation le tableau des zone
 
   areas[0].name := 'Forêt';
   areas[0].resources := createResourcesList();
@@ -156,6 +156,13 @@ begin
   areas[4].resources[METAUX] := 2;
   areas[4].typeArea := discoverable;
   areas[4].enabled := false;
+
+  areas[5].name := 'D.Y.T. Liberty Prime';
+  areas[5].typeArea := buildable;
+  areas[5].required := createResourcesList();
+  areas[5].required[BOIS] := 2500;
+  areas[5].required[METAUX] := 750;
+  areas[5].enabled := false;
 end;
 
 end.
