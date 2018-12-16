@@ -1,4 +1,4 @@
-unit Marchandage;
+unit shop;
 
 {$mode objfpc}{$H+}{$GOTO ON}
 
@@ -17,7 +17,7 @@ interface
            - Pain (entre 5 et 10 U -> 1 Obj.P),
            - Lait (entre 5 et 10 U -> 1 Obj.P).
   }
-  procedure commerce(var town: Village);
+  procedure trade(var town: Village);
 implementation
   {
    Rôle :
@@ -68,7 +68,7 @@ implementation
            - Pain (entre 5 et 10 U -> 1 Obj.P),
            - Lait (entre 5 et 10 U -> 1 Obj.P).
   }
-  procedure commerce(var town: Village);
+  procedure trade(var town: Village);
   const
        // Valeur de réference de d'achat du bois.
        QTRESSOURCESB1 = '50';

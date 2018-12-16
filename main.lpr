@@ -1,11 +1,11 @@
 program main;
 
-uses unitmenus, unitvillage, crt, Utils, UnitArea, UnitResources;
+uses unitmenus, unitvillage, crt, Utils, UnitArea;
 
 procedure play();
 var
   menuChoice, exit: Integer;
-  menu:  array[0 .. 4] of string; //Entrées du menu
+  menu:  array[0 .. 3] of string; //Entrées du menu
   town: Village;
   areas: AreaRegistry;
 begin
@@ -19,22 +19,22 @@ begin
         WriteLn;
 
         displayDate(town); //Affichage de la date dans le jeu
-        displayStats(town.resources); //Affichage des resources du village
+        displayStats(town); //Afficher les statistiques du village
+
+        WriteLn();
 
         //Définition du menu
         menu[0] := 'Gérer les villageois';
-        menu[1] := 'Construire';
-        menu[2] := 'Se rendre à ...';
-        menu[3] := 'Dormir';
-        menu[4] := 'Quitter le jeu';
+        menu[1] := 'Se rendre à ...';
+        menu[2] := 'Dormir';
+        menu[3] := 'Quitter le jeu';
 
         menuChoice := displayMenu(menu); //Affichage du menu et récupération du choix de l'utilisateur
         case menuChoice of
         0: manageVillagers(town, areas);
-          1: build(town, areas);
-          2 : goToArea(areas);
-          3 : tourSuivant(town, areas);
-          4 : exit := 1;
+          1 : goToArea(areas);
+          2 : tourSuivant(town, areas);
+          3 : exit := 1;
         end
   Until exit = 1;
 end;

@@ -8,8 +8,10 @@ uses UnitResources;
 
 const
 NO_AREA = -1;
+HOUSE_FAKE_AREA = -2;
+EXPEDITION_FAKE_AREA = -3;
 
-type areaType = (base, buildable); //Types de zones (base = Accesible dès le debut, buildable = Bâtissable)
+type areaType = (discoverable, buildable); //Types de zones (base = Accesible dès le debut, buildable = Bâtissable)
 type NumberArray = array of Integer;
 
 {Définition d'une zone}
@@ -30,8 +32,6 @@ type AreaRegistry = array of area;
   procedure goToArea(var areas: AreaRegistry);
   {Enregistrement des différentes zones du jeu}
   procedure registerAreas(var areas: AreaRegistry);
-  {Obtenir la liste des identifiants des zone bâtissables qui ne sont pas encore construites}
-  function getBuildableAreas(var areas: AreaRegistry): NumberArray;
 
 implementation
 
@@ -73,26 +73,6 @@ begin
     else
       displayFile('data/' + areas[choice].name + '.txt',1, true); //Afficher le fichier qui contient le texte descriptif de la zone sélectionée.
   end;
-end;
-
-{Obtenir la liste des identifiants des zone bâtissables qui ne sont pas encore construites}
-function getBuildableAreas(var areas: AreaRegistry): NumberArray;
-var
-  r: NumberArray; // Tableau contenant les identifiants des zones à retourner
-  i, j: Integer;
-begin
-  j := 0;
-  SetLength(r, Length(areas)); // Définitions du nombre maximum de zones pouvant être retourné.
-  for i := 0 to Length(areas) - 1 do // Parcour de la liste des zones du jeu
-  begin
-    if (areas[i].typeArea = buildable) AND (not areas[i].enabled) then //Si la zone est bâtisable et n'est pas activée (Pas construite)
-    begin
-      r[j] := i;
-      j := j + 1;
-    end;
-  end;
-  SetLength(r, j); // On défini la taille finale du tableau grâce au nombre total de zones bâtissables trouvées.
-  getBuildableAreas := r; //Retourner le tableau r
 end;
 
 {Obtenir la liste des identifiants des zone visitables et attribuables à villageois.}
@@ -143,25 +123,25 @@ end;
 {Enregistrement des différentes zones du jeu}
 procedure registerAreas(var areas: AreaRegistry);
 begin
-  setLength(areas, 4); // Initialisation le tableau des zone
+  setLength(areas, 5); // Initialisation le tableau des zone
 
   areas[0].name := 'Forêt';
   areas[0].resources := createResourcesList();
   areas[0].resources[BOIS] := 5;
-  areas[0].typeArea := base;
-  areas[0].enabled := true;
+  areas[0].typeArea := discoverable;
+  areas[0].enabled := false;
 
   areas[1].name := 'IUT';
   areas[1].resources := createResourcesList();
   areas[1].resources[OBJETS_PRECIEUX] := 1;
-  areas[1].typeArea := base;
-  areas[1].enabled := true;
+  areas[1].typeArea := discoverable;
+  areas[1].enabled := false;
 
   areas[2].name := 'Lac';
   areas[2].resources := createResourcesList();
   areas[2].resources[POISSON] := 2;
-  areas[2].typeArea := base;
-  areas[2].enabled := true;
+  areas[2].typeArea := discoverable;
+  areas[2].enabled := false;
 
   areas[3].name := 'Ferme';
   areas[3].resources := createResourcesList();
@@ -170,6 +150,12 @@ begin
   areas[3].required := createResourcesList();
   areas[3].required[BOIS] := 250;
   areas[3].enabled := false;
+
+  areas[4].name := 'Décharge';
+  areas[4].resources := createResourcesList();
+  areas[4].resources[METAUX] := 2;
+  areas[4].typeArea := discoverable;
+  areas[4].enabled := false;
 end;
 
 end.

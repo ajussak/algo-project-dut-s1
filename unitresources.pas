@@ -11,19 +11,21 @@ interface
   const LAIT = 4;
   const LEGUMES = 5;
   const OBJETS_PRECIEUX = 6;
+  const METAUX = 7;
   const EATABLE_RESOURCES: array[0 .. 4] of Integer = (PAIN, VIANDE, LAIT, LEGUMES, POISSON);
-  const RESOURCES_STRING : array[0..6] of string = ('Bois', 'Poisson', 'Viande', 'Pain', 'Lait', 'Legumes', 'Objets Precieux');
+  const RESOURCES_STRING : array[0..7] of string = ('Bois', 'Poisson', 'Viande', 'Pain', 'Lait', 'Legumes', 'Objets Precieux', 'Meteaux');
 
-  type resourceList = array[0 .. 6] of Integer;
+  type resourceList = array[0 .. 7] of Integer;
 
   {Afficher la liste des ressources}
-  procedure displayStats(var resources: resourceList);
+  procedure displayResourcesStats(var resources: resourceList);
   {Initialiser et retourner une liste de ressources.}
   function createResourcesList(): resourceList;
   {Additionner une liste de resources avec une autre}
   procedure importResources(var list1 : resourceList; var list2 : resourceList; modifier: Real);
   {Mettre la liste des ressources requise en ligne}
   function getRequirementString(resources : resourceList) : string;
+  {Si les resources sont suffisantes}
   function hasEnoughResources(var source: resourceList; var target: resourceList): Boolean;
 
 implementation
@@ -32,7 +34,7 @@ uses
   sysutils;
 
 {Afficher la liste des ressources}
-procedure displayStats(var resources: resourceList);
+procedure displayResourcesStats(var resources: resourceList);
 var
   i : Integer;
 begin
@@ -40,8 +42,6 @@ begin
 
   for i := 0 to Length(resources) - 1 do
     WriteLn(RESOURCES_STRING[i], ' : ', resources[i]);
-
-  WriteLn;
 end;
 
 {Mettre la liste des ressources requise en ligne}
@@ -71,9 +71,11 @@ begin
   resources[LAIT] := 0;
   resources[LEGUMES] := 0;
   resources[OBJETS_PRECIEUX] := 0;
+  resources[METAUX] := 0;
   createResourcesList := resources;
 end;
 
+{Si les resources sont suffisantes}
 function hasEnoughResources(var source: resourceList; var target: resourceList): Boolean;
 var
   i: Integer;
@@ -95,19 +97,6 @@ var
 begin
   for i := 0 to Length(list1) do
     list1[i] := list1[i] + Round(list2[i] * modifier);
-end;
-
-procedure weatherTurn(var village: resourceList);
-var
-  weather: Integer;
-begin
-  weather:= random(3);
-  case weather of
-    0 : village[LEGUMES] := round(village[LEGUMES]*1.5);
-    1 : village[BOIS] := round(village[BOIS]*0.75);
-    2 : village[LEGUMES] := round(village[LEGUMES]*0.75);
-    3 : village[POISSON] := round(village[POISSON]*0.75);
-  end;
 end;
 
 end.

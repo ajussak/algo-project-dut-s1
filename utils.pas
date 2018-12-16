@@ -6,13 +6,27 @@ interface
 
 uses crt;
 
-procedure displayFile(filename: string; xPos: tcrtcoord; waitUser: Boolean);
-procedure clearScreen();
+  procedure displayFile(filename: string; xPos: tcrtcoord; waitUser: Boolean);
+  procedure clearScreen();
+  function getFileLine(filename: string; ind: Integer): string;
 
 implementation
 
 uses
   unitmenus;
+
+function getFileLine(filename: string; ind: Integer): string;
+var
+  stock: text;
+  i: Integer;
+  line: string;
+begin
+  assign(stock, filename); //Ouvrir le fichier
+  reset(stock);
+  for i := 0 to ind do
+    readln(stock, line);
+  getFileLine := line;
+end;
 
 { Afficher le contenu d'un fichier à l'écran }
 procedure displayFile(filename: string; xPos: tcrtcoord; waitUser: Boolean);
