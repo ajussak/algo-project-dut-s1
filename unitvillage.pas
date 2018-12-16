@@ -277,7 +277,7 @@ begin
 
   //Définition de l'ecran de fin
   SetLength(menu, 1);
-  menu[0] := 'Quitter le jeux';
+  menu[0] := 'Quitter le jeu';
 
   displayMenu(menu); // Afficher le menu
 
