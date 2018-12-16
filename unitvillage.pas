@@ -253,7 +253,7 @@ var
   i: Integer;
 begin
   Randomize();
-  if Random() <= 0.25 then // 25 % de chance
+  if Random() <= 0.5 then // 50 % de chance
   begin
     for i := 0 to Length(areas) - 1 do
     begin
